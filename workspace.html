@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script>
+(function(){try{var t=localStorage.getItem('bizlens_theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workspace · BizLens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ivory: #FFFDF0; --cream: #FAF7EF;
+    --navy: #384B70; --ocean: #0F4C75;
+    --grayblue: #E6EBF2; --charcoal: #1F2937; --slate: #64748B;
+    --sage: #5E9F6E; --amber: #D9A441;
+    --font-sans: 'Inter', sans-serif;
+    --font-display: 'Inter Tight', sans-serif;
+    --ease: cubic-bezier(.4,0,.2,1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body, p, span, a, input, button { font-family: var(--font-sans); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
+  body { margin: 0; overflow-x: hidden; background: var(--ivory); }
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 900; opacity: .18; mix-blend-mode: multiply; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E"); }
+  .aura { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .aura span { position: absolute; border-radius: 50%; filter: blur(100px); }
+  .aura__a { width: 46vw; height: 46vw; left: -10vw; top: -14vw; background: rgba(15,76,117,.10); }
+  .aura__b { width: 40vw; height: 40vw; right: -10vw; top: 26vh; background: rgba(56,75,112,.10); }
+  .aura__c { width: 52vw; height: 52vw; left: 22vw; bottom: -26vw; background: rgba(15,76,117,.05); }
+  .cursor-glow { position: fixed; top: 0; left: 0; width: 420px; height: 420px; border-radius: 50%; z-index: 1; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(15,76,117,0.05), transparent 62%); transition: opacity 300ms; }
+  .glass { background: rgba(255,255,255,.70); backdrop-filter: blur(22px) saturate(1.4); border: 1px solid var(--grayblue); }
+  .shell { display: flex; min-height: 100vh; }
+  .side { position: fixed; left: 12px; top: 12px; bottom: 12px; width: 230px; z-index: 50; border-radius: 20px; display: flex; flex-direction: column; padding: 20px; gap: 4px; overflow-y: auto; }
+  .side__brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 500; font-size: 15.5px; color: var(--navy); margin-bottom: 20px; text-decoration: none; }
+  .nav__mark { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4.5px; background: linear-gradient(135deg, var(--ocean), var(--navy)); flex: none; }
+  .nav__mark i { width: 10px; height: 10px; background: #fff; border-radius: 50%; display: block; font-style: normal; }
+  .side__cap { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: rgba(100,116,139,.6); margin: 12px 0 4px; padding: 0 12px; }
+  .side__item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; font-size: 13.5px; color: var(--slate); font-weight: 500; text-decoration: none; transition: background 200ms, color 200ms; }
+  .side__item i { width: 17px; height: 17px; flex: none; }
+  .side__item:hover, .side__item.is-active { background: rgba(15,76,117,.08); color: var(--ocean); }
+  .side__foot { margin-top: auto; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+  .side__foot-label { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: rgba(100,116,139,.6); margin: 0; }
+  .side__foot-num { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.03em; color: var(--navy); line-height: 1; font-variant-numeric: tabular-nums; }
+  .side__foot-num i { font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: var(--slate); font-style: normal; }
+  .mini-bar { height: 6px; width: 100%; background: var(--grayblue); border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .mini-bar i { display: block; height: 100%; background: var(--ocean); border-radius: 999px; transition: width 500ms var(--ease); font-style: normal; }
+  .main { flex: 1; display: flex; flex-direction: column; min-height: 100vh; padding-left: 258px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 24px; border: 1px solid var(--grayblue); border-radius: 20px; margin: 12px 12px 0 0; background: rgba(255,255,255,.6); backdrop-filter: blur(16px); position: sticky; top: 12px; z-index: 40; }
+  .topbar__title { flex: 1 1 0%; min-width: 0; }
+  .crumb { margin: 0; font-size: 11.5px; color: var(--slate); }
+  .crumb span { color: rgba(100,116,139,.4); margin: 0 4px; }
+  h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 22px; letter-spacing: -0.03em; color: var(--navy); }
+  .search { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--grayblue); background: rgba(255,253,240,.7); color: var(--slate); font-size: 13.5px; cursor: text; width: 280px; flex: none; }
+  .search i { width: 16px; height: 16px; flex: none; }
+  .search input { background: transparent; outline: none; width: 100%; font-size: 13.5px; color: var(--charcoal); }
+  .search input::placeholder { color: rgba(100,116,139,.5); }
+  .search kbd { font-size: 11px; color: rgba(100,116,139,.4); border: 1px solid var(--grayblue); border-radius: 4px; padding: 0 4px; }
+  .topbar__tools { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex: 1 1 0%; min-width: 0; }
+  .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid var(--grayblue); color: var(--slate); cursor: pointer; background: transparent; transition: background 200ms; position: relative; overflow: hidden; }
+  .icon-btn:hover { background: rgba(230,235,242,.4); }
+  .icon-btn i { width: 17px; height: 17px; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--ocean), var(--navy)); color: white; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(15,76,117,.2); cursor: pointer; }
+  .main > section, .main > div.content { padding: 0 32px; margin-top: 24px; }
+  .main__foot { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; margin-top: auto; border-top: 1px solid var(--grayblue); font-size: 12px; color: rgba(100,116,139,.6); }
+  .main__foot a { color: var(--ocean); text-decoration: none; }
+  .main__foot a:hover { text-decoration: underline; }
+  /* Saved card styles */
+  .saved-card { display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 18px; text-decoration: none; transition: transform 200ms var(--ease), box-shadow 200ms var(--ease); }
+  .saved-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(15,76,117,.10); }
+  .saved-card__head { display: flex; align-items: center; justify-content: space-between; }
+  .saved-card__ico { width: 40px; height: 40px; border-radius: 12px; background: rgba(15,76,117,.08); color: var(--ocean); display: flex; align-items: center; justify-content: center; }
+  .saved-card__del { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--grayblue); background: transparent; color: var(--slate); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 200ms; }
+  .saved-card__del:hover { background: rgba(217,108,108,.1); color: #D96C6C; border-color: rgba(217,108,108,.2); }
+  .saved-card__name { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 17px; color: var(--navy); letter-spacing: -0.02em; }
+  .saved-card__type { margin: 0; font-size: 12.5px; color: var(--slate); }
+  .saved-card__meta { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+  .saved-card__score { font-size: 12.5px; font-weight: 600; color: var(--ocean); }
+  .saved-card__date { font-size: 11.5px; color: rgba(100,116,139,.7); }
+  /* Main content sections */
+  /* Ripple */
+  .ripple { position: absolute; border-radius: 50%; background: currentColor; opacity: .2; pointer-events: none; transform: scale(0); animation: ripple 520ms cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes ripple { to { transform: scale(2.4); opacity: 0; } }
+
+  /* ── Tema gelap ───────────────────────────────────────────── */
+  html[data-theme="dark"] {
+    --ivory: #14181F; --cream: #14181F;
+    --navy: #C9D3E3; --ocean: #6FA8DC;
+    --grayblue: #2A3140; --charcoal: #E6EBF2; --slate: #93A2B8;
+  }
+  html[data-theme="dark"] body { background: var(--ivory); color: var(--charcoal); }
+  html[data-theme="dark"] .glass { background: rgba(20,24,31,.70); border-color: var(--grayblue); }
+  html[data-theme="dark"] .search { background: rgba(20,24,31,.5); }
+  html[data-theme="dark"] .search input { color: var(--charcoal); }
+  html[data-theme="dark"] .icon-btn { border-color: var(--grayblue); color: var(--slate); }
+  html[data-theme="dark"] .icon-btn:hover { background: rgba(255,255,255,.08); }
+  html[data-theme="dark"] .side__item:hover,
+  html[data-theme="dark"] .side__item.is-active { background: rgba(111,168,220,.14); color: var(--ocean); }
+  html[data-theme="dark"] .topbar { background: rgba(20,24,31,.6); border-color: var(--grayblue); }
+  html[data-theme="dark"] .main__foot { border-color: var(--grayblue); }
+  html[data-theme="dark"] .saved-card__ico { background: rgba(111,168,220,.16); }
+  html[data-theme="dark"] .saved-card__del { border-color: var(--grayblue); }
+  html[data-theme="dark"] .saved-card__name { color: var(--charcoal); }
+  html[data-theme="dark"] .aura span { opacity: .5; }
+  html[data-theme="dark"] .grain { opacity: .08; }
+
+  /* Override class Tailwind (tailwind-built.css) yang dipakai di konten workspace */
+  html[data-theme="dark"] .text-ink { color: var(--charcoal) !important; }
+  html[data-theme="dark"] .text-ink\/40 { color: rgba(230,235,242,.4) !important; }
+  html[data-theme="dark"] .text-ink\/64,
+  html[data-theme="dark"] .text-ink\/70 { color: rgba(230,235,242,.64) !important; }
+  html[data-theme="dark"] .bg-white\/70 { background-color: rgba(30,35,45,.55) !important; }
+  html[data-theme="dark"] .border-border { border-color: var(--grayblue) !important; }
+  html[data-theme="dark"] .bg-surfaceSoft { background-color: #1B212C !important; }
+  html[data-theme="dark"] .bg-accent\/10 { background-color: rgba(111,168,220,.16) !important; }
+  html[data-theme="dark"] .bg-sage\/10 { background-color: rgba(94,159,110,.18) !important; }
+</style>
+
+<!-- Tailwind offline css -->
+<link rel="stylesheet" href="css/tailwind-built.css">
+
+<style>
+  /* Premium layout overrides */
+  body { background-color: #F1F5F9 !important; }
+  html[data-theme="dark"] body { background-color: #0F172A !important; }
+  .side { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; left: 24px !important; top: 24px !important; bottom: 24px !important; }
+  .main { padding-left: 96px !important; padding-top: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
+  .topbar { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(226,235,242,0.8) !important; box-shadow: 0 4px 20px rgba(15,76,117,0.08) !important; backdrop-filter: blur(16px) !important; padding: 16px 24px !important; margin: 16px 24px 0 16px !important; border-radius: 16px !important; }
+  html[data-theme="dark"] .topbar { background: rgba(15,23,42,0.85) !important; border-color: rgba(42,49,64,0.8) !important; }
+  .search { background-color: #FFFFFF !important; border-radius: 9999px !important; border: 1px solid transparent !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; padding: 12px 24px !important; width: 320px !important; }
+  html[data-theme="dark"] .search { background-color: #1E293B !important; }
+  .icon-btn, .avatar { background-color: #FFFFFF !important; border: none !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; }
+  html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .avatar { background-color: #1E293B !important; }
+  .content { background-color: #FFFFFF !important; border-radius: 32px !important; margin: 0 24px 24px 0 !important; padding: 32px !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06) !important; flex: 1 !important; display: flex !important; flex-direction: column !important; overflow-x: hidden !important; position: relative !important; }
+  html[data-theme="dark"] .content { background-color: #1E293B !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important; }
+  .content .card, .content .glass, .content .sim-sec { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="aura" aria-hidden="true"><span class="aura__a"></span><span class="aura__b"></span><span class="aura__c"></span></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <!-- ── Floating sidebar ── SAMA PERSIS DENGAN DASHBOARD, pakai dashboard.css ──── -->
+  <!-- Sidebar — diisi otomatis oleh navbar.js -->
+  <aside class="side glass" id="side" data-page="workspace"></aside>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="main" style="padding-top: 24px; padding-right: 32px; padding-bottom: 32px; display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- Topbar -->
+    <header class="topbar" style="margin: 24px 32px 0 32px; border-radius: 9999px; box-shadow: 0 10px 30px -10px rgba(15,76,117,0.15);">
+      <div class="topbar__title">
+        <p class="crumb">BizLens <span>/</span> Workspace</p>
+        <h1>Workspace</h1>
+      </div>
+      <label class="search glass">
+        <i data-lucide="search"></i>
+        <input type="search" placeholder="Cari analisis bisnis…" aria-label="Cari">
+        <kbd>⌘K</kbd>
+      </label>
+      <div class="topbar__tools">
+        <button class="icon-btn glass" id="themeToggle" type="button" aria-label="Ganti tema" data-ripple><i data-lucide="sun-medium"></i></button>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════
+         MULAI KONTEN TAILWIND (khusus halaman Workspace)
+         ═══════════════════════════════════════════════════════ -->
+
+    <!-- ── Sapaan singkat ──────────────────────────────────── -->
+    <section class="max-w-2xl pt-1">
+      <p class="text-[11px] tracking-[.18em] uppercase text-ink/40 mb-3">Ruang Kerja</p>
+      <h2 class="font-display font-semibold text-[clamp(27px,2.8vw,40px)] leading-tight tracking-tight text-ink">
+        Mau analisis apa hari ini?
+      </h2>
+      <p class="mt-3 text-[15.5px] leading-relaxed text-ink/64">
+        Mulai analisis baru untuk usaha Anda, atau lanjutkan pekerjaan yang sudah tersimpan sebelumnya.
+      </p>
+    </section>
+
+    <!-- ── Pilih jenis analisis (mulai baru) ───────────────── -->
+    <section aria-label="Mulai analisis baru">
+      <p class="text-[10.5px] tracking-[.16em] uppercase text-ink/40 mb-4">Mulai Analisis Baru</p>
+      
+      <style>
+        .new-cards-grid { display: grid; gap: 24px; grid-template-columns: 1fr; }
+        @media (min-width: 768px) { .new-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+      </style>
+      
+      <div class="new-cards-grid">
+
+        <a href="wizard.html?jenis=kelayakan"
+           class="group flex flex-col items-start gap-3 rounded-xl3 border border-border bg-white/70 backdrop-blur-xl
+                  p-6 shadow-[0_2px_6px_rgba(31,41,55,.05),0_14px_36px_rgba(31,41,55,.07)]
+                  transition-all duration-300 hover:-translate-y-1
+                  hover:shadow-[0_4px_10px_rgba(31,41,55,.06),0_28px_64px_rgba(31,41,55,.10)]">
+          <span class="grid place-items-center w-11 h-11 rounded-2xl bg-accent/10 text-accent">
+            <i data-lucide="calculator" class="w-5 h-5"></i>
+          </span>
+          <h3 class="font-display font-semibold text-[19px] tracking-tight text-ink">Kelayakan Usaha</h3>
+          <p class="text-[13.5px] leading-relaxed text-ink/70">
+            Simulasi finansial: profit, ROI, BEP, dan proyeksi arus kas dari rencana usaha Anda.
+          </p>
+          <span class="mt-1 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-accent">
+            Mulai analisis
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1"></i>
+          </span>
+        </a>
+
+        <a href="wizard.html?jenis=kesehatan"
+           class="group flex flex-col items-start gap-3 rounded-xl3 border border-border bg-white/70 backdrop-blur-xl
+                  p-6 shadow-[0_2px_6px_rgba(31,41,55,.05),0_14px_36px_rgba(31,41,55,.07)]
+                  transition-all duration-300 hover:-translate-y-1
+                  hover:shadow-[0_4px_10px_rgba(31,41,55,.06),0_28px_64px_rgba(31,41,55,.10)]">
+          <span class="grid place-items-center w-11 h-11 rounded-2xl bg-sage/10 text-sage">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </span>
+          <h3 class="font-display font-semibold text-[19px] tracking-tight text-ink">Kesehatan Bisnis</h3>
+          <p class="text-[13.5px] leading-relaxed text-ink/70">
+            Diagnosis menyeluruh: skor kesehatan, radar bisnis, dan rekomendasi perbaikan.
+          </p>
+          <span class="mt-1 inline-flex items-center gap-1.5 text-[13.5px] font-medium text-accent">
+            Mulai analisis
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1"></i>
+          </span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ── Analisis tersimpan (dari localStorage) ──────────── -->
+    <section aria-label="Analisis tersimpan">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <p class="text-[10.5px] tracking-[.16em] uppercase text-ink/40">Analisis Tersimpan</p>
+        <span id="savedCount" class="text-[12.5px] text-ink/40">0 analisis</span>
+      </div>
+
+      <div id="savedGrid" class="grid gap-6" style="grid-template-columns:repeat(auto-fill,minmax(240px,1fr))"></div>
+
+      <div id="savedEmpty"
+           class="grid justify-items-center gap-3 text-center mt-2 p-12 rounded-xl2
+                  border border-border bg-surfaceSoft shadow-[0_1px_3px_rgba(31,41,55,.05),0_6px_18px_rgba(31,41,55,.04)]">
+        <i data-lucide="folder-open" class="w-8 h-8 text-ink/40" stroke-width="1.5"></i>
+        <h3 class="font-display font-semibold text-[22px] tracking-tight text-ink">Belum ada analisis tersimpan</h3>
+        <p class="max-w-md text-[15px] leading-relaxed text-ink/64">
+          Analisis yang Anda buat akan otomatis tersimpan di perangkat ini dan bisa dibuka kapan saja.
+        </p>
+        <a href="wizard.html?jenis=kelayakan" data-ripple
+           class="mt-1 inline-flex items-center gap-2 rounded-full bg-accent text-cream text-[13.5px] font-medium
+                  px-5 py-2.5 shadow-[0_10px_24px_rgba(15,76,117,.18)] hover:bg-hover transition-colors">
+          <i data-lucide="plus" class="w-4 h-4"></i>Buat Analisis Pertama
+        </a>
+      </div>
+    </section>
+
+    <footer class="main__foot">
+      <span>BizLens · Bangun Bisnis Lebih Cerdas dengan Data, Bukan Tebakan.</span>
+      <a href="index.html">← Kembali ke beranda</a>
+    </footer>
+  </main>
+</div>
+
+
+<script src="js/theme.js"></script>
+<script src="js/biz-core.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/workspace.js"></script>
+<script src="js/icons.js"></script></body>
+</html>
+

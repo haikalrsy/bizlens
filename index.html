@@ -1,0 +1,510 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BizLens — Data Bisnis Anda, Jadi Keputusan</title>
+<meta name="description" content="BizLens membaca angka bisnis Anda dan mengubahnya menjadi keputusan: Business Health Score, Projection, ROI, BEP, What-if Simulator, dan Cermin Bisnis AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/tailwind-built.css">
+</head>
+<body class="antialiased">
+
+<div class="grain" aria-hidden="true"></div>
+<div class="aura" aria-hidden="true"><span class="aura__a"></span><span class="aura__b"></span></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ── Navbar: dynamic island ──────────────────────────────────── -->
+<header class="nav" id="nav">
+  <div class="island" id="island">
+    <a class="island__brand" href="#top">
+       <img 
+  src="logo.png" 
+  alt="BizLens Logo" 
+  class="w-[30px] h-[31px] object-contain"
+>
+      BizLens.
+    </a>
+    <nav class="island__links" aria-label="Utama">
+      <a href="#problem">Masalah</a>
+      <a href="#solution">Solusi</a>
+      <a href="#simulator">Simulator</a>
+      <a href="#features">Fitur</a>
+      <a href="#story">Cerita</a>
+    </nav>
+    <div class="island__cta"><a href="#cta">Coba Gratis</a></div>
+    <button class="island__toggle w-7 h-7 items-center justify-center text-cream" id="islandToggle" aria-label="Buka menu">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ── Hero ──────────────────────────────────────────────────── -->
+<section class="hero" id="hero">
+  <div class="wrap hero__inner">
+    <p class="eyebrow reveal">Business Intelligence untuk UMKM</p>
+    <h1 class="hero__title">
+      <span class="line reveal" style="--d:80ms">Bisnis Lebih Cerdas.</span>
+      <span class="line reveal accent-em" style="--d:180ms">Bukan Tebakan.</span>
+    </h1>
+    <p class="lead reveal" style="--d:300ms">
+      BizLens membaca angka penjualan, biaya, dan harga Anda, lalu mengubahnya jadi satu hal yang Anda butuhkan: keputusan berikutnya.
+    </p>
+    <div class="hero__actions reveal" style="--d:400ms">
+      <a class="btn" href="workspace.html" data-ripple>Mulai Analisis</a>
+      <a class="btn btn--ghost" href="#solution" data-ripple>Lihat Cara Kerjanya</a>
+    </div>
+    <p class="hero__meta reveal" style="--d:480ms">Health Score · Projection · ROI · BEP · Simulator · Cermin AI</p>
+  </div>
+  <div class="hero__scroll reveal" style="--d:580ms"><span></span>Gulir</div>
+</section>
+
+<!-- ── Film: dashboard pinned melintasi Scene 02–07 ────────────── -->
+<div class="film" id="film">
+  <div class="film__stage" aria-hidden="false">
+    <div class="stage__inner">
+      <div class="dash" id="dash">
+        <div class="dash__bar">
+          <div class="dash__dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="dash__title">BizLens · Report <span class="dash__biz" id="dashBiz">Kopi Ruang Tengah</span></div>
+          <div class="dash__tools">
+            <button class="chip" type="button" data-ripple>Export</button>
+            <button class="chip chip--solid" type="button" data-ripple>Dashboard</button>
+          </div>
+        </div>
+
+        <div class="dash__grid">
+          <article class="cell cell--score" data-tilt>
+            <p class="cell__label">Business Health Score</p>
+            <div class="gauge">
+              <svg viewBox="0 0 200 116" role="img" aria-label="Business Health Score">
+                <path class="gauge__track" d="M16 106a84 84 0 0 1 168 0"/>
+                <path class="gauge__value" id="gaugeArc" d="M16 106a84 84 0 0 1 168 0"/>
+              </svg>
+              <div class="gauge__num"><span id="scoreNum">0</span><i>/100</i></div>
+            </div>
+            <p class="cell__foot"><span class="dot"></span><span id="scoreLabel">Menghitung…</span></p>
+          </article>
+
+          <article class="cell cell--chart" data-tilt>
+            <div class="cell__head">
+              <p class="cell__label">Revenue &amp; Projection</p>
+              <p class="cell__delta" id="revDelta">+0%</p>
+            </div>
+            <div class="chart">
+              <svg viewBox="0 0 520 200" preserveAspectRatio="none" role="img" aria-label="Grafik pendapatan dan proyeksi">
+                <g class="chart__grid">
+                  <line x1="0" y1="40" x2="520" y2="40"/><line x1="0" y1="90" x2="520" y2="90"/>
+                  <line x1="0" y1="140" x2="520" y2="140"/><line x1="0" y1="190" x2="520" y2="190"/>
+                </g>
+                <path class="chart__area" id="chartArea" d=""/>
+                <path class="chart__line" id="chartLine" d=""/>
+                <path class="chart__proj" id="chartProj" d=""/>
+                <circle class="chart__pin" id="chartPin" r="4.5" cx="0" cy="0"/>
+              </svg>
+              <div class="chart__x"><span>Jan</span><span>Mar</span><span>Mei</span><span>Jul</span><span>Sep</span><span>Nov</span><span class="is-proj">Proyeksi</span></div>
+            </div>
+          </article>
+
+          <article class="cell cell--kpi" data-tilt>
+            <p class="cell__label">ROI</p>
+            <p class="kpi"><span id="roiNum">0</span><i>%</i></p>
+            <p class="cell__foot muted">Kembali atas modal</p>
+          </article>
+
+          <article class="cell cell--kpi" data-tilt>
+            <p class="cell__label">BEP</p>
+            <p class="kpi"><span id="bepNum">0</span><i> unit</i></p>
+            <p class="cell__foot muted">Titik impas/bulan</p>
+          </article>
+
+          <article class="cell cell--flow" data-tilt>
+            <div class="cell__head">
+              <p class="cell__label">Cash Flow</p>
+              <p class="cell__delta" id="flowNet">Rp0</p>
+            </div>
+            <div class="bars" id="bars"></div>
+          </article>
+
+          <article class="cell cell--risk" data-tilt>
+            <p class="cell__label">Business Risk</p>
+            <p class="risk__level" id="riskLevel">—</p>
+            <div class="risk__meter"><i id="riskFill"></i></div>
+            <ul class="risk__list" id="riskList"></ul>
+          </article>
+
+          <article class="cell cell--ai glass" data-tilt>
+            <p class="cell__label"><span class="pulse"></span>Cermin Bisnis AI</p>
+            <p class="ai__text" id="aiText"></p>
+            <p class="cell__label cell__label--sub">Rekomendasi</p>
+            <ul class="ai__recs" id="aiRecs"></ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="scene" data-scene="2">
+    <div class="wrap scene__box scene__box--right">
+      <h2 class="display">Data Anda sudah bicara. Belum ada yang dengar.</h2>
+      <p class="lead">Setiap transaksi menyimpan pola. BizLens menyusunnya jadi satu layar yang bisa dibaca dalam sepuluh detik.</p>
+    </div>
+  </section>
+
+  <section class="scene scene--stat" data-scene="3" id="problem">
+    <div class="wrap">
+      <p class="colossal"><span data-count="80" data-suffix="%">0</span></p>
+      <h2 class="display display--tight">UMKM tutup di 3 tahun pertama bukan karena kurang gigih, tapi karena finansial yang ditebak-tebak.</h2>
+      <p class="lead lead--narrow">Harga ditentukan dari perasaan, kas bercampur uang pribadi, dan laporan laba-rugi hanya berupa tebakan.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-scene="4" id="solution">
+    <div class="wrap scene__box scene__box--left">
+      <h2 class="display">Catatan sederhana, jadi arah yang jelas.</h2>
+      <p class="lead">Satu dashboard membaca kesehatan bisnis, memproyeksikan bulan depan, dan menunjukkan keputusan mana yang layak diambil lebih dulu.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-scene="5" id="simulator">
+    <div class="wrap scene__box scene__box--right">
+      <h2 class="display display--sm">Geser satu angka. Lihat masa depan berubah.</h2>
+      <div class="sim" id="sim">
+        <label class="sim__row">
+          <span class="sim__name">Harga jual</span>
+          <span class="sim__val" id="valPrice">Rp25.000</span>
+          <input type="range" id="rPrice" min="15000" max="45000" step="500" value="25000" aria-label="Harga jual">
+        </label>
+        <label class="sim__row">
+          <span class="sim__name">Penjualan / bulan</span>
+          <span class="sim__val" id="valUnits">1.800 unit</span>
+          <input type="range" id="rUnits" min="500" max="4000" step="50" value="1800" aria-label="Penjualan per bulan">
+        </label>
+        <label class="sim__row">
+          <span class="sim__name">Biaya produksi / unit</span>
+          <span class="sim__val" id="valCost">Rp11.000</span>
+          <input type="range" id="rCost" min="4000" max="24000" step="250" value="11000" aria-label="Biaya produksi per unit">
+        </label>
+        <label class="sim__row">
+          <span class="sim__name">Biaya operasional</span>
+          <span class="sim__val" id="valOps">Rp14.000.000</span>
+          <input type="range" id="rOps" min="4000000" max="40000000" step="500000" value="14000000" aria-label="Biaya operasional bulanan">
+        </label>
+        <p class="sim__hint">Dashboard di sebelah berubah seketika. Tanpa refresh, tanpa rumus.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" data-scene="6">
+    <div class="wrap scene__box scene__box--left">
+      <h2 class="display">Bukan grafik untuk dibaca. Kalimat untuk didengar.</h2>
+      <p class="lead">Cermin Bisnis AI membaca seluruh angka, menjelaskan kondisi Anda dalam bahasa manusia, lalu menyusun rekomendasi berurutan.</p>
+    </div>
+  </section>
+
+  <section class="scene" data-scene="7">
+    <div class="wrap scene__box scene__box--right">
+      <h2 class="display">Satu angka. Sehat atau tidak?</h2>
+      <p class="lead">Skor dihitung dari margin, arus kas, dan jarak ke titik impas, lalu diterjemahkan jadi risiko dan langkah nyata.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ── Feature story · zigzag dengan konektor ──────────────────── -->
+<section class="features" id="features">
+  <div class="wrap head reveal">
+    <p class="eyebrow">Fitur</p>
+    <h2 class="display">Tujuh alat. Satu alur berpikir.</h2>
+  </div>
+
+  <article class="story reveal">
+    <div class="wrap story__grid">
+      <div class="story__art"><div class="art art--score"><span id="artScore">78</span><i>/100</i></div></div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9"/><path d="M12 12l5-3"/></svg></span>
+        <h3>Business Health Score</h3>
+        <p>Skor 0–100 menggabungkan margin, likuiditas, dan jarak ke titik impas jadi satu kalimat yang jujur tentang kondisi bisnis Anda.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="story story--alt reveal">
+    <div class="wrap story__grid">
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span>
+        <h3>Business Projection</h3>
+        <p>Proyeksi tiga bulan ke depan dari pola Anda sendiri, ditampilkan sebagai garis putus: kemungkinan, bukan janji.</p>
+      </div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__art"><div class="art art--spark"><svg viewBox="0 0 300 120" preserveAspectRatio="none"><path class="art__line" d="M0 96 L50 84 L100 88 L150 62 L200 54 L250 30 L300 18"/></svg></div></div>
+    </div>
+  </article>
+
+  <article class="story reveal">
+    <div class="wrap story__grid">
+      <div class="story__art"><div class="art art--duo"><b>ROI</b><span>34%</span><b>BEP</b><span>1.240</span></div></div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9h.01M15 15h.01M15 9l-6 6"/></svg></span>
+        <h3>ROI &amp; BEP</h3>
+        <p>Dua angka yang paling ditakuti pemilik usaha, dihitung ulang otomatis setiap kali satu variabel berubah.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="story story--alt reveal">
+    <div class="wrap story__grid">
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><circle cx="14" cy="6" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="12" x2="20" y2="12"/><circle cx="8" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="16" cy="18" r="2" fill="currentColor" stroke="none"/></svg></span>
+        <h3>What-if Simulator</h3>
+        <p>"Bagaimana kalau harga naik seribu rupiah?" Terjawab dalam 300 milidetik, bukan rapat satu jam.</p>
+      </div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__art"><div class="art art--slider"><i></i><i class="mid"></i><i></i></div></div>
+    </div>
+  </article>
+
+  <article class="story reveal">
+    <div class="wrap story__grid">
+      <div class="story__art"><div class="art art--ai glass"><span class="pulse"></span>Margin Anda tipis di 24%. Naikkan harga 6% sebelum menambah stok.</div></div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 1 1-4.32-7.4L21 3l-1.1 3.9a8.46 8.46 0 0 1 1.1 4.6z"/></svg></span>
+        <h3>Cermin Bisnis AI</h3>
+        <p>Analisis naratif yang menyebut masalah Anda dengan namanya, lalu memberi urutan tindakan yang jelas.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="story story--alt reveal">
+    <div class="wrap story__grid">
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+        <h3>Export PDF &amp; Report</h3>
+        <p>Satu dokumen rapi untuk bank, investor, atau diri Anda sendiri bulan depan, persis seperti yang Anda lihat di layar.</p>
+      </div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__art"><div class="art art--doc"><span></span><span></span><span></span><span class="short"></span></div></div>
+    </div>
+  </article>
+
+  <article class="story reveal">
+    <div class="wrap story__grid">
+      <div class="story__art"><div class="art art--dash"><i></i><i></i><i></i><i></i></div></div>
+      <div class="story__connector" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+      <div class="story__body">
+        <span class="story__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+        <h3>Dashboard</h3>
+        <p>Rumah dari semuanya. Dibuka pagi hari, dibaca sepuluh detik, dan Anda tahu apa yang harus dikerjakan hari itu.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- ── Case study 1 ───────────────── -->
+<section class="case reveal" id="story" style="padding-bottom: 40px;">
+  <div class="wrap">
+    <div class="case__intro">
+      <p class="eyebrow">Studi Kasus 1</p>
+      <h2 class="display display--sm">Kopi Ruang Tengah menaikkan margin 19% tanpa pelanggan baru.</h2>
+      <p class="lead">Harga menu terlaris ternyata 14% di bawah biaya sebenarnya. Setelah disesuaikan, skor kesehatan bisnis mereka melompat.</p>
+      <div class="case__jump">
+        <span>41</span>
+        <em aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></em>
+        <b>82</b>
+      </div>
+    </div>
+
+    <div class="case__panel glass">
+      <div class="case__bars">
+        <div class="bar" style="--h:32%"><i></i><span>M1</span></div>
+        <div class="bar" style="--h:44%"><i></i><span>M2</span></div>
+        <div class="bar" style="--h:38%"><i></i><span>M3</span></div>
+        <div class="bar" style="--h:61%"><i></i><span>M4</span></div>
+        <div class="bar" style="--h:74%"><i></i><span>M5</span></div>
+        <div class="bar" style="--h:96%"><i></i><span>M6</span></div>
+      </div>
+      <div class="case__stats">
+        <div class="case__stat"><b>90 hari</b><span>waktu penyesuaian</span></div>
+        <div class="case__stat"><b>+19%</b><span>margin bersih</span></div>
+        <div class="case__stat"><b>41 → 82</b><span>health score</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Case study 2 ───────────────── -->
+<section class="case reveal" style="padding-top: 40px; padding-bottom: 40px;">
+  <div class="wrap">
+    <div class="case__intro">
+      <p class="eyebrow">Studi Kasus 2</p>
+      <h2 class="display display--sm">Bengkel "Maju Jaya" terbebas dari jebakan arus kas negatif.</h2>
+      <p class="lead">Bengkel selalu ramai, tapi kas selalu kosong. Ternyata 40% modal mati di stok lambat. Simulasi membuktikan bahwa diskon cuci gudang menyelamatkan *cash flow*.</p>
+      <div class="case__jump">
+        <span>-Rp5JT</span>
+        <em aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></em>
+        <b style="color: #5E9F6E;">+Rp12JT</b>
+      </div>
+    </div>
+
+    <div class="case__panel glass">
+      <div class="case__bars">
+        <div class="bar" style="--h:20%"><i></i><span>B1</span></div>
+        <div class="bar" style="--h:15%"><i></i><span>B2</span></div>
+        <div class="bar" style="--h:40%"><i></i><span>B3</span></div>
+        <div class="bar" style="--h:70%"><i></i><span>B4</span></div>
+        <div class="bar" style="--h:85%"><i></i><span>B5</span></div>
+        <div class="bar" style="--h:100%"><i></i><span>B6</span></div>
+      </div>
+      <div class="case__stats">
+        <div class="case__stat"><b>3 Bulan</b><span>waktu pemulihan</span></div>
+        <div class="case__stat"><b>+Rp17 Juta</b><span>lonjakan kas bulanan</span></div>
+        <div class="case__stat"><b>Risiko Tinggi → Aman</b><span>status bisnis</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Case study 3 ───────────────── -->
+<section class="case reveal" style="padding-top: 40px;">
+  <div class="wrap">
+    <div class="case__intro">
+      <p class="eyebrow">Studi Kasus 3</p>
+      <h2 class="display display--sm">Butik "Aisyah" menekan beban BEP hingga 45%.</h2>
+      <p class="lead">Target penjualan terlalu berat untuk dikejar. Simulator menunjukkan bahwa memangkas biaya operasional (pindah lokasi sewa) adalah kunci instan untuk bertahan hidup.</p>
+      <div class="case__jump">
+        <span>1.500</span>
+        <em aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></em>
+        <b style="color: #0F4C75;">820</b>
+      </div>
+    </div>
+
+    <div class="case__panel glass">
+      <div class="case__bars">
+        <div class="bar" style="--h:100%"><i></i><span>Q1</span></div>
+        <div class="bar" style="--h:90%"><i></i><span>Q2</span></div>
+        <div class="bar" style="--h:70%"><i></i><span>Q3</span></div>
+        <div class="bar" style="--h:65%"><i></i><span>Q4</span></div>
+        <div class="bar" style="--h:55%"><i></i><span>Q5</span></div>
+        <div class="bar" style="--h:45%"><i></i><span>Q6</span></div>
+      </div>
+      <div class="case__stats">
+        <div class="case__stat"><b>-45%</b><span>penurunan target BEP</span></div>
+        <div class="case__stat"><b>Rp8 Juta</b><span>penghematan operasional</span></div>
+        <div class="case__stat"><b>74 → 89</b><span>health score</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Statistik ────────────────────────────────────────────────── -->
+<section class="stats">
+  <div class="wrap stats__grid">
+    <div class="stat reveal"><p class="stat__num"><span data-count="12480">0</span><i>+</i></p><p>UMKM menganalisis bisnisnya dengan BizLens</p></div>
+    <div class="stat reveal" style="--d:80ms"><p class="stat__num"><span data-count="19">0</span><i>%</i></p><p>Rata-rata kenaikan margin dalam 90 hari pertama</p></div>
+    <div class="stat reveal" style="--d:160ms"><p class="stat__num"><span data-count="10">0</span><i> detik</i></p><p>Waktu membaca kondisi bisnis</p></div>
+    <div class="stat reveal" style="--d:240ms"><p class="stat__num"><span data-count="4">0</span><i>,9</i></p><p>Penilaian kejelasan rekomendasi AI</p></div>
+  </div>
+</section>
+
+<!-- ── Testimonial · card stack ─────────────────────────────────── -->
+<section class="voices">
+  <div class="wrap">
+    <div class="voices__head reveal">
+      <p class="eyebrow">Cerita Pengguna</p>
+      <h2 class="display">Yang berubah bukan angkanya. Cara mereka memutuskan.</h2>
+    </div>
+    <div class="stack" id="stack">
+      <figure class="card glass" data-i="0">
+        <blockquote>“Saya baru sadar produk paling laku justru yang paling merugikan. Satu layar, sepuluh detik.”</blockquote>
+        <figcaption><b>Ayu Prameswari</b><span>Pemilik, Kopi Ruang Tengah</span></figcaption>
+      </figure>
+      <figure class="card glass" data-i="1">
+        <blockquote>“Simulatornya bikin rapat kami selesai lebih cepat. Semua orang melihat angka yang sama.”</blockquote>
+        <figcaption><b>Dimas Nugroho</b><span>Founder, Rakit Furnitur</span></figcaption>
+      </figure>
+      <figure class="card glass" data-i="2">
+        <blockquote>“Cermin Bisnis AI menyebut masalah saya lebih jelas daripada konsultan yang saya bayar.”</blockquote>
+        <figcaption><b>Sarah Halim</b><span>Direktur, Halim Tekstil</span></figcaption>
+      </figure>
+    </div>
+    <p class="stack__hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l-6-6 6-6M15 6l6 6-6 6"/></svg>
+      Geser atau ketuk kartu untuk lanjut
+    </p>
+  </div>
+</section>
+
+<!-- ── CTA ─────────────────────────────────────────────────────── -->
+<section class="cta" id="cta">
+  <div class="wrap cta__inner">
+    <h2 class="display display--lg reveal">Berhenti menebak, mulai malam ini.</h2>
+    <p class="lead reveal">Masukkan angka bisnis Anda. BizLens mengubahnya menjadi skor, proyeksi, risiko, dan langkah berikutnya yang lebih jelas.</p>
+    <a class="btn btn--lg reveal" href="workspace.html" data-ripple>Buka Dashboard BizLens</a>
+    <p class="cta__note reveal">100% gratis · Tanpa kartu kredit · Langsung mulai</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+   <div>
+  <p class="foot__brand flex items-center gap-2">
+   <img 
+  src="logo.png" 
+  alt="BizLens Logo" 
+  class="w-[30px] h-[31px] object-contain"
+>
+    <span>BizLens.</span>
+  </p>
+
+  <p class="foot__tag">
+    Bangun bisnis lebih cerdas dengan data, bukan tebakan.
+  </p>
+</div>
+    <div><h4>Produk</h4><a href="#solution">Dashboard</a><a href="#simulator">What-if Simulator</a><a href="#features">Business Report</a><a href="#features">Export PDF</a></div>
+    <div><h4>Analisis</h4><a href="#features">Business Health Score</a><a href="#features">Business Projection</a><a href="#features">ROI &amp; BEP</a><a href="#features">Rekomendasi Cerdas</a></div>
+    <div><h4>Perusahaan</h4><a href="#story">Studi Kasus</a><a href="#story">Cerita Pengguna</a><a href="#cta">Hubungi Kami</a></div>
+  </div>
+  <div class="wrap foot__base"><span>© 2026 BizLens</span><span>Dibuat untuk pemilik usaha yang lelah menebak.</span></div>
+</footer>
+
+<!-- ── Dashboard mini · docked widget setelah film berakhir ─────── -->
+<div class="dash-dock" id="dashDock">
+  <div class="dash-dock__card glass" id="dashDockCard">
+    <div class="dash-dock__ring">
+      <svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="16"/><circle class="val" id="dockRing" cx="20" cy="20" r="16"/></svg>
+      <div class="dash-dock__num" id="dockNum">0</div>
+    </div>
+    <div class="dash-dock__txt"><b>Health Score</b><span>Kembali ke atas</span></div>
+  </div>
+</div>
+
+<script src="js/dashboard.js"></script>
+<script src="js/motion.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/icons.js"></script></body>
+
+</html>
+

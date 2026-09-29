@@ -1,0 +1,622 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BizLens - Analisis Bisnis</title>
+  <link rel="stylesheet" href="css/tailwind-built.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ivory: #FFFDF0; --cream: #FAF7EF;
+      --navy: #384B70; --ocean: #0F4C75;
+      --grayblue: #E6EBF2; --charcoal: #1F2937; --slate: #64748B;
+      --sage: #5E9F6E; --amber: #D9A441; --softred: #D96C6C;
+      --font-sans: 'Inter', sans-serif;
+      --font-display: 'Inter Tight', sans-serif;
+      --ease: cubic-bezier(.4,0,.2,1);
+    }
+    body { 
+      margin: 0; 
+      background: var(--ivory); 
+      font-family: var(--font-sans); 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Background Aura */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: -1;
+      opacity: 0.4;
+    }
+    body::before {
+      top: -200px;
+      left: -200px;
+      background: var(--ocean);
+    }
+    body::after {
+      bottom: -200px;
+      right: -200px;
+      background: var(--navy);
+    }
+
+    /* Grain Texture */
+    .grain {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .font-display { font-family: var(--font-display); }
+
+    /* Glassmorphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 10px 40px -10px rgba(56, 75, 112, 0.1);
+    }
+
+    /* Form Styles */
+    .input-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--grayblue);
+      background: rgba(255, 255, 255, 0.8);
+      font-family: var(--font-sans);
+      transition: all 0.2s var(--ease);
+      color: var(--charcoal);
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: var(--ocean);
+      box-shadow: 0 0 0 3px rgba(15, 76, 117, 0.1);
+      background: #fff;
+    }
+    .input-field::placeholder {
+      color: var(--slate);
+    }
+    .input-error {
+      border-color: var(--softred);
+    }
+    .error-msg {
+      color: var(--softred);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .label {
+      display: block;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--navy);
+      color: var(--ivory);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s var(--ease);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: var(--ocean);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--grayblue);
+      color: var(--navy);
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s var(--ease);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-secondary:hover {
+      background: #D1D9E6;
+    }
+
+    /* Progress Indicator */
+    .progress-line {
+      height: 4px;
+      background: var(--grayblue);
+      width: 100%;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: -1;
+      border-radius: 2px;
+    }
+    .progress-line-fill {
+      height: 100%;
+      background: var(--ocean);
+      width: 0%;
+      transition: width 0.4s var(--ease);
+      border-radius: 2px;
+    }
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--grayblue);
+      color: var(--slate);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.3s var(--ease);
+      border: 4px solid var(--ivory);
+    }
+    .step-circle.active {
+      background: var(--ocean);
+      color: var(--ivory);
+      box-shadow: 0 0 0 4px rgba(15, 76, 117, 0.2);
+    }
+    .step-circle.completed {
+      background: var(--navy);
+      color: var(--ivory);
+    }
+
+    /* Wizard Steps */
+    .wizard-step {
+      display: none;
+      animation: fadeInSlideUp 0.4s var(--ease) forwards;
+    }
+    .wizard-step.active {
+      display: block;
+    }
+
+    @keyframes fadeInSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 500ms var(--ease), transform 500ms var(--ease); }
+    .reveal.is-in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+
+  <!-- Navbar -->
+  <nav class="w-full py-4 px-6 md:px-12 flex justify-between items-center z-10">
+    <a href="workspace.html" class="flex items-center gap-2 text-navy hover:text-ocean transition-colors font-display font-bold text-xl">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      BizLens
+    </a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex items-center justify-center p-4 z-10">
+    <div class="w-full max-w-2xl">
+      
+      <!-- Header -->
+      <div class="text-center mb-8 reveal is-in">
+        <h1 id="page-title" class="text-3xl md:text-4xl font-display font-bold text-navy mb-2">Analisis Bisnis</h1>
+        <p class="text-slate">Lengkapi data di bawah ini untuk memulai proyeksi Anda.</p>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="relative mb-10 px-4 reveal is-in">
+        <div class="progress-line">
+          <div class="progress-line-fill" id="progress-fill"></div>
+        </div>
+        <div class="flex justify-between relative z-0">
+          <div class="step-circle active" id="indicator-1">1</div>
+          <div class="step-circle" id="indicator-2">2</div>
+          <div class="step-circle" id="indicator-3">3</div>
+          <div class="step-circle" id="indicator-4">4</div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs font-medium text-slate">
+          <span class="text-center w-12 text-navy">Profil</span>
+          <span class="text-center w-12">Keuangan</span>
+          <span class="text-center w-12">Target</span>
+          <span class="text-center w-12">Confirm</span>
+        </div>
+      </div>
+
+      <!-- Wizard Card -->
+      <div class="glass-card rounded-2xl p-6 md:p-8 reveal is-in">
+        <form id="wizard-form">
+          
+          <!-- Step 1: Profil Usaha -->
+          <div class="wizard-step active" id="step-1">
+            <h2 class="text-xl font-display font-bold text-navy mb-6">Profil Usaha</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="label">Nama Usaha</label>
+                <input type="text" id="namaUsaha" name="namaUsaha" class="input-field" placeholder="Contoh: Kopi Senja" required>
+                <p class="error-msg">Nama usaha wajib diisi.</p>
+              </div>
+              <div>
+                <label class="label">Jenis Usaha</label>
+                <select id="jenisUsaha" name="jenisUsaha" class="input-field" required>
+                  <option value="">Pilih Jenis Usaha...</option>
+                  <option value="F&B">Food & Beverage</option>
+                  <option value="Retail">Retail</option>
+                  <option value="Jasa">Jasa</option>
+                  <option value="Manufaktur">Manufaktur</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                <p class="error-msg">Jenis usaha wajib dipilih.</p>
+              </div>
+              <div>
+                <label class="label">Deskripsi Singkat</label>
+                <textarea id="deskripsi" name="deskripsi" class="input-field" rows="3" placeholder="Ceritakan sedikit tentang usaha Anda..." required></textarea>
+                <p class="error-msg">Deskripsi wajib diisi.</p>
+              </div>
+              <div>
+                <label class="label">Nama Pemilik</label>
+                <input type="text" id="namaPemilik" name="namaPemilik" class="input-field" placeholder="Nama Anda" required>
+                <p class="error-msg">Nama pemilik wajib diisi.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Data Keuangan -->
+          <div class="wizard-step" id="step-2">
+            <h2 class="text-xl font-display font-bold text-navy mb-6">Data Keuangan (Per Unit & Bulan)</h2>
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Harga Jual per Unit (Rp)</label>
+                  <input type="number" id="price" name="price" class="input-field" placeholder="25000" min="0" required>
+                  <p class="error-msg">Harga jual wajib diisi valid.</p>
+                </div>
+                <div>
+                  <label class="label">Biaya Produksi per Unit (Rp)</label>
+                  <input type="number" id="cost" name="cost" class="input-field" placeholder="10000" min="0" required>
+                  <p class="error-msg">Biaya produksi wajib diisi valid.</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Estimasi Penjualan/Bulan (Unit)</label>
+                  <input type="number" id="units" name="units" class="input-field" placeholder="500" min="0" required>
+                  <p class="error-msg">Estimasi penjualan wajib diisi valid.</p>
+                </div>
+                <div>
+                  <label class="label">Biaya Operasional/Bulan (Rp)</label>
+                  <input type="number" id="ops" name="ops" class="input-field" placeholder="3000000" min="0" required>
+                  <p class="error-msg">Biaya operasional wajib diisi valid.</p>
+                </div>
+              </div>
+              <div>
+                <label class="label">Modal Awal (Rp)</label>
+                <input type="number" id="modal" name="modal" class="input-field" placeholder="20000000" min="0" required>
+                <p class="error-msg">Modal awal wajib diisi valid.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Target Penjualan -->
+          <div class="wizard-step" id="step-3">
+            <h2 class="text-xl font-display font-bold text-navy mb-6">Target Ekspansi & Kelayakan</h2>
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Target Penjualan/Bulan (Unit)</label>
+                  <input type="number" id="targetUnits" name="targetUnits" class="input-field" placeholder="1000" min="0" required>
+                  <p class="error-msg">Wajib diisi valid.</p>
+                </div>
+                <div>
+                  <label class="label">Target Margin Keuntungan (%)</label>
+                  <input type="number" id="targetMargin" name="targetMargin" class="input-field" placeholder="40" min="0" max="100" required>
+                  <p class="error-msg">Wajib diisi valid (0-100).</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="label">Target Break Even Point (Bulan)</label>
+                  <input type="number" id="targetBep" name="targetBep" class="input-field" placeholder="12" min="1" required>
+                  <p class="error-msg">Wajib diisi valid.</p>
+                </div>
+                <div>
+                  <label class="label">Target ROI per Tahun (%)</label>
+                  <input type="number" id="targetRoi" name="targetRoi" class="input-field" placeholder="20" min="0" required>
+                  <p class="error-msg">Wajib diisi valid.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Konfirmasi Data -->
+          <div class="wizard-step" id="step-4">
+            <h2 class="text-xl font-display font-bold text-navy mb-6">Konfirmasi Data</h2>
+            <div class="bg-grayblue/30 rounded-xl p-5 border border-grayblue/50">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 class="text-sm font-semibold text-ocean mb-3 uppercase tracking-wider">Profil Usaha</h3>
+                  <dl class="space-y-2 text-sm text-charcoal">
+                    <div class="flex justify-between"><dt class="text-slate">Nama Usaha:</dt> <dd id="confirm-namaUsaha" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Jenis:</dt> <dd id="confirm-jenisUsaha" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Pemilik:</dt> <dd id="confirm-namaPemilik" class="font-medium">-</dd></div>
+                  </dl>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold text-ocean mb-3 uppercase tracking-wider">Data Keuangan</h3>
+                  <dl class="space-y-2 text-sm text-charcoal">
+                    <div class="flex justify-between"><dt class="text-slate">Harga Jual:</dt> <dd id="confirm-price" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Biaya/Unit:</dt> <dd id="confirm-cost" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Penjualan:</dt> <dd id="confirm-units" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Ops/Bulan:</dt> <dd id="confirm-ops" class="font-medium">-</dd></div>
+                    <div class="flex justify-between"><dt class="text-slate">Modal:</dt> <dd id="confirm-modal" class="font-medium">-</dd></div>
+                  </dl>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-grayblue/50">
+                <h3 class="text-sm font-semibold text-ocean mb-3 uppercase tracking-wider">Target</h3>
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-charcoal">
+                  <div class="flex justify-between"><dt class="text-slate">Target Penjualan:</dt> <dd id="confirm-targetUnits" class="font-medium">-</dd></div>
+                  <div class="flex justify-between"><dt class="text-slate">Target Margin:</dt> <dd id="confirm-targetMargin" class="font-medium">-</dd></div>
+                  <div class="flex justify-between"><dt class="text-slate">Target BEP:</dt> <dd id="confirm-targetBep" class="font-medium">-</dd></div>
+                  <div class="flex justify-between"><dt class="text-slate">Target ROI:</dt> <dd id="confirm-targetRoi" class="font-medium">-</dd></div>
+                </dl>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="mt-8 flex justify-between items-center pt-4 border-t border-grayblue">
+            <button type="button" id="btn-prev" class="btn-secondary hidden">Kembali</button>
+            <div class="ml-auto">
+              <button type="button" id="btn-next" class="btn-primary">Berikutnya</button>
+              <button type="submit" id="btn-submit" class="btn-primary hidden">Simpan Analisis</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // URL Parameter for Title
+      const urlParams = new URLSearchParams(window.location.search);
+      const jenis = urlParams.get('jenis');
+      const pageTitle = document.getElementById('page-title');
+      if (jenis === 'kelayakan') {
+        pageTitle.textContent = 'Analisis Kelayakan';
+      } else if (jenis === 'kesehatan') {
+        pageTitle.textContent = 'Analisis Kesehatan Bisnis';
+      }
+
+      const form = document.getElementById('wizard-form');
+      const steps = [
+        document.getElementById('step-1'),
+        document.getElementById('step-2'),
+        document.getElementById('step-3'),
+        document.getElementById('step-4')
+      ];
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnSubmit = document.getElementById('btn-submit');
+      const progressFill = document.getElementById('progress-fill');
+      
+      let currentStep = 0;
+
+      // Load data
+      let editId = urlParams.get('edit');
+      let initialData = {};
+      
+      if (editId) {
+        const analyses = JSON.parse(localStorage.getItem('bizlens_analyses') || '[]');
+        const existing = analyses.find(a => a.id === editId);
+        if (existing) {
+          initialData = existing;
+          document.getElementById('page-title').textContent = 'Ubah Data Analisis';
+        } else {
+          editId = null;
+        }
+      } 
+      
+      if (!editId) {
+        initialData = JSON.parse(localStorage.getItem('bizlens_draft') || '{}');
+      }
+
+      Object.keys(initialData).forEach(key => {
+        const el = form.elements[key];
+        if (el) el.value = initialData[key];
+      });
+
+      // Save draft on change (only if not editing)
+      form.addEventListener('input', () => {
+        if (!editId) {
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData.entries());
+          localStorage.setItem('bizlens_draft', JSON.stringify(data));
+        }
+      });
+
+      function updateUI() {
+        // Steps visibility
+        steps.forEach((step, index) => {
+          step.classList.toggle('active', index === currentStep);
+        });
+
+        // Buttons
+        btnPrev.classList.toggle('hidden', currentStep === 0);
+        
+        if (currentStep === steps.length - 1) {
+          btnNext.classList.add('hidden');
+          btnSubmit.classList.remove('hidden');
+          populateConfirmation();
+        } else {
+          btnNext.classList.remove('hidden');
+          btnSubmit.classList.add('hidden');
+        }
+
+        // Progress indicators
+        for (let i = 0; i < 4; i++) {
+          const indicator = document.getElementById(`indicator-${i + 1}`);
+          const textSpan = indicator.parentElement.nextElementSibling.children[i];
+          
+          if (i < currentStep) {
+            indicator.classList.add('completed');
+            indicator.classList.remove('active');
+            textSpan.classList.add('text-navy');
+          } else if (i === currentStep) {
+            indicator.classList.add('active');
+            indicator.classList.remove('completed');
+            textSpan.classList.add('text-navy');
+          } else {
+            indicator.classList.remove('active', 'completed');
+            textSpan.classList.remove('text-navy');
+          }
+        }
+
+        // Progress line fill
+        progressFill.style.width = `${(currentStep / (steps.length - 1)) * 100}%`;
+      }
+
+      function formatRupiah(num) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+      }
+
+      function populateConfirmation() {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        document.getElementById('confirm-namaUsaha').textContent = data.namaUsaha || '-';
+        document.getElementById('confirm-jenisUsaha').textContent = data.jenisUsaha || '-';
+        document.getElementById('confirm-namaPemilik').textContent = data.namaPemilik || '-';
+        
+        document.getElementById('confirm-price').textContent = formatRupiah(data.price || 0);
+        document.getElementById('confirm-cost').textContent = formatRupiah(data.cost || 0);
+        document.getElementById('confirm-units').textContent = (data.units || 0) + ' Unit';
+        document.getElementById('confirm-ops').textContent = formatRupiah(data.ops || 0);
+        document.getElementById('confirm-modal').textContent = formatRupiah(data.modal || 0);
+        
+        document.getElementById('confirm-targetUnits').textContent = (data.targetUnits || 0) + ' Unit';
+        document.getElementById('confirm-targetMargin').textContent = (data.targetMargin || 0) + '%';
+        document.getElementById('confirm-targetBep').textContent = (data.targetBep || 0) + ' Bulan';
+        document.getElementById('confirm-targetRoi').textContent = (data.targetRoi || 0) + '%';
+      }
+
+      function validateCurrentStep() {
+        const currentStepEl = steps[currentStep];
+        const inputs = currentStepEl.querySelectorAll('input, select, textarea');
+        let isValid = true;
+
+        inputs.forEach(input => {
+          if (!input.checkValidity()) {
+            isValid = false;
+            input.classList.add('input-error');
+            const errorMsg = input.nextElementSibling;
+            if (errorMsg && errorMsg.classList.contains('error-msg')) {
+              errorMsg.style.display = 'block';
+            }
+          } else {
+            input.classList.remove('input-error');
+            const errorMsg = input.nextElementSibling;
+            if (errorMsg && errorMsg.classList.contains('error-msg')) {
+              errorMsg.style.display = 'none';
+            }
+          }
+        });
+
+        return isValid;
+      }
+
+      // Input validation events
+      form.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') {
+          if (e.target.checkValidity()) {
+            e.target.classList.remove('input-error');
+            const errorMsg = e.target.nextElementSibling;
+            if (errorMsg && errorMsg.classList.contains('error-msg')) {
+              errorMsg.style.display = 'none';
+            }
+          }
+        }
+      });
+
+      btnNext.addEventListener('click', () => {
+        if (validateCurrentStep()) {
+          if (currentStep < steps.length - 1) {
+            currentStep++;
+            updateUI();
+          }
+        }
+      });
+
+      btnPrev.addEventListener('click', () => {
+        if (currentStep > 0) {
+          currentStep--;
+          updateUI();
+        }
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        if (!validateCurrentStep()) return;
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Parse numbers
+        const numericFields = ['price', 'cost', 'units', 'ops', 'modal', 'targetUnits', 'targetMargin', 'targetBep', 'targetRoi'];
+        numericFields.forEach(field => {
+          data[field] = parseFloat(data[field]) || 0;
+        });
+
+        // Add metadata & Save
+        const analyses = JSON.parse(localStorage.getItem('bizlens_analyses') || '[]');
+        
+        if (editId) {
+          data.id = editId;
+          data.createdAt = initialData.createdAt || new Date().toISOString();
+          const idx = analyses.findIndex(a => a.id === editId);
+          if (idx !== -1) {
+            analyses[idx] = data;
+          } else {
+            analyses.push(data);
+          }
+        } else {
+          data.id = Date.now().toString();
+          data.createdAt = new Date().toISOString();
+          analyses.push(data);
+        }
+        
+        localStorage.setItem('bizlens_analyses', JSON.stringify(analyses));
+        
+        // Clear draft
+        localStorage.removeItem('bizlens_draft');
+
+        // Redirect
+        window.location.href = `dashboard.html?id=${data.id}`;
+      });
+
+      updateUI();
+    });
+  </script>
+<script src="js/icons.js"></script></body>
+</html>
+
+

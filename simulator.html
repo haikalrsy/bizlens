@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What-if Simulator · BizLens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tailwind-built.css">
+<style>
+  .glass{background:rgba(255,255,255,.7);backdrop-filter:blur(22px) saturate(1.4);border:1px solid #E6EBF2}
+  .card{background:#FFF;border:1px solid #E6EBF2;border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:9999px;font-weight:500;font-size:14px;transition:all 300ms;background:#0F4C75;color:#FFF;border:1px solid transparent;cursor:pointer;text-decoration:none}
+  .btn:hover{background:#384B70;transform:translateY(-2px);box-shadow:0 4px 12px rgba(15,76,117,.25)}
+  .btn--ghost{background:transparent;color:#1F2937;border-color:#E6EBF2}
+  .btn--ghost:hover{background:rgba(230,235,242,.4);transform:none;box-shadow:none}
+  .btn--sm{padding:8px 16px;font-size:13px}
+  .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:9999px;font-size:11.5px;font-weight:500;border:1px solid #E6EBF2;color:#64748B}
+  .tag--up{background:rgba(94,159,110,.1);border-color:rgba(94,159,110,.2);color:#5E9F6E}
+  .tag--warn{background:rgba(217,164,65,.1);border-color:rgba(217,164,65,.2);color:#D9A441}
+  .tag--dn{background:rgba(217,108,108,.1);border-color:rgba(217,108,108,.2);color:#D96C6C}
+  body{background:#FFFDF0;color:#1F2937;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;margin:0}
+  .grain{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:.2;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E")}
+  .aura{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aura span{position:absolute;border-radius:9999px;filter:blur(100px)}
+  .aura__a{width:46vw;height:46vw;left:-10vw;top:-14vw;background:rgba(15,76,117,.08)}
+  .aura__b{width:40vw;height:40vw;right:-10vw;top:26vh;background:rgba(56,75,112,.08)}
+  .cursor-glow{position:fixed;top:0;left:0;width:420px;height:420px;border-radius:9999px;z-index:1;pointer-events:none;opacity:0;transition:opacity 300ms;transform:translate3d(-50%,-50%,0);background:radial-gradient(circle,rgba(15,76,117,.06),transparent 62%)}
+  .cursor-glow.is-on{opacity:1}
+  .side{position:fixed;left:12px;top:12px;bottom:12px;width:230px;z-index:50;border-radius:20px;display:flex;flex-direction:column;padding:20px;gap:4px;overflow-y:auto}
+  .side__brand{display:flex;align-items:center;gap:10px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:15.5px;color:#384B70;margin-bottom:20px;text-decoration:none}
+  .nav__mark{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4.5px;background:linear-gradient(135deg,#0F4C75,#384B70);flex:none}
+  .nav__mark i{width:10px;height:10px;background:#fff;border-radius:50%;display:block}
+  .side__cap{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(100,116,139,.6);margin:12px 0 4px;padding:0 12px}
+  .side__item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;font-size:13.5px;color:#64748B;font-weight:500;text-decoration:none;transition:all 200ms}
+  .side__item i{width:17px;height:17px;flex:none}
+  .side__item:hover{background:rgba(230,235,242,.5);color:#1F2937}
+  .side__item.is-active{background:rgba(15,76,117,.1);color:#0F4C75}
+  .side__foot{margin-top:auto;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+  .side__foot-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(100,116,139,.6);margin:0}
+  .side__foot-num{margin:0;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:22px;color:#384B70;line-height:1}
+  .side__foot-num i{font-family:'Inter',sans-serif;font-weight:400;font-size:12px;color:#64748B;font-style:normal}
+  .mini-bar{height:6px;background:#E6EBF2;border-radius:9999px;overflow:hidden;margin-top:8px}
+  .mini-bar i{display:block;height:100%;background:#0F4C75;border-radius:9999px;transition:all 500ms;font-style:normal}
+  .shell{display:flex;min-height:100vh}
+  .main{flex:1;display:flex;flex-direction:column;min-height:100vh;padding-left:258px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 24px;border:1px solid #E6EBF2;border-radius:20px;margin:12px 12px 0 0;background:rgba(255,255,255,.6);backdrop-filter:blur(16px);position:sticky;top:12px;z-index:40}
+  .topbar__title{flex:1 1 0%;min-width:0}
+  .crumb{margin:0;font-size:11.5px;color:#64748B}
+  .crumb span{color:rgba(100,116,139,.4);margin:0 4px}
+  h1{margin:0;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:22px;color:#384B70}
+  .search{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;border:1px solid #E6EBF2;background:rgba(255,253,240,.7);font-size:13.5px;width:260px;flex:none}
+  .search i{width:16px;height:16px;flex:none}
+  .search input{background:transparent;outline:none;width:100%;font-size:13.5px;color:#1F2937}
+  .search input::placeholder{color:rgba(100,116,139,.5)}
+  .search kbd{font-size:11px;color:rgba(100,116,139,.4);border:1px solid #E6EBF2;border-radius:4px;padding:0 4px}
+  .topbar__tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:1 1 0%;min-width:0}
+  .avatar{width:36px;height:36px;border-radius:9999px;background:linear-gradient(135deg,#0F4C75,#384B70);color:#FFF;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .content{display:flex;flex-direction:column;gap:24px;padding:0 32px 32px;margin-top:24px}
+  .card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+  .card__label{margin:0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#64748B}
+  .card__foot{margin:0;font-size:12px;color:#64748B}
+  .reveal{opacity:0;transform:translateY(20px);transition:all 500ms}
+  .reveal.is-in{opacity:1;transform:none}
+
+  /* Simulator specific */
+  .sim-grid{display:grid;gap:20px}
+  @media(min-width:1024px){.sim-grid{grid-template-columns:1fr 1.1fr}}
+  .slider-group{display:flex;flex-direction:column;gap:8px;padding:18px 0;border-bottom:1px solid #E6EBF2}
+  .slider-group:last-child{border-bottom:none}
+  .slider-header{display:flex;justify-content:space-between;align-items:center}
+  .slider-label{font-size:14px;font-weight:500;color:#1F2937}
+  .slider-val{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:16px;color:#0F4C75;font-variant-numeric:tabular-nums}
+  .slider-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .biz-range{flex:1;accent-color:#0F4C75;height:6px;cursor:pointer}
+  .step-btn{width:32px;height:32px;border-radius:9999px;border:1px solid #E6EBF2;background:transparent;font-size:18px;line-height:1;color:#64748B;cursor:pointer;transition:all 200ms;display:flex;align-items:center;justify-content:center}
+  .step-btn:hover{background:#0F4C75;color:#FFF;border-color:#0F4C75}
+  .slider-hint{font-size:11px;color:rgba(100,116,139,.6)}
+  .metric-box{border:1px solid #E6EBF2;border-radius:16px;padding:16px;text-align:center}
+  .metric-box-label{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#64748B;margin:0}
+  .metric-box-val{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:clamp(18px,2vw,26px);letter-spacing:-0.02em;color:#384B70;margin:8px 0 0;font-variant-numeric:tabular-nums}
+  .metrics-2x2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .comp-table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .comp-table th{text-align:left;padding:10px 16px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#64748B;border-bottom:1px solid #E6EBF2;font-weight:500}
+  .comp-table td{padding:12px 16px;border-bottom:1px solid rgba(230,235,242,.5);font-variant-numeric:tabular-nums}
+  .comp-table tr:last-child td{border-bottom:none}
+  .change-pos{color:#5E9F6E;font-weight:600}
+  .change-neg{color:#D96C6C;font-weight:600}
+  .saved-sim-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid #E6EBF2;border-radius:14px;margin-top:8px;background:rgba(255,255,255,.5);text-decoration:none;transition:all 200ms}
+  .saved-sim-card:hover{border-color:#0F4C75;transform:translateY(-2px);box-shadow:0 4px 12px rgba(15,76,117,.1)}
+  .toast{position:fixed;bottom:24px;right:24px;background:#1F2937;color:#FFF;padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:500;z-index:999;opacity:0;transform:translateY(12px);transition:all 300ms;pointer-events:none}
+  .toast.is-on{opacity:1;transform:none}
+</style>
+<style>
+  /* Premium layout overrides */
+  body { background-color: #F1F5F9 !important; }
+  html[data-theme="dark"] body { background-color: #0F172A !important; }
+  .side { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; left: 24px !important; top: 24px !important; bottom: 24px !important; }
+  .main { padding-left: 96px !important; padding-top: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
+  .topbar { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(226,235,242,0.8) !important; box-shadow: 0 4px 20px rgba(15,76,117,0.08) !important; backdrop-filter: blur(16px) !important; padding: 16px 24px !important; margin: 16px 24px 0 16px !important; border-radius: 16px !important; }
+  html[data-theme="dark"] .topbar { background: rgba(15,23,42,0.85) !important; border-color: rgba(42,49,64,0.8) !important; }
+  .search { background-color: #FFFFFF !important; border-radius: 9999px !important; border: 1px solid transparent !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; padding: 12px 24px !important; width: 320px !important; }
+  html[data-theme="dark"] .search { background-color: #1E293B !important; }
+  .icon-btn, .avatar { background-color: #FFFFFF !important; border: none !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; }
+  html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .avatar { background-color: #1E293B !important; }
+  .content { background-color: #FFFFFF !important; border-radius: 32px !important; margin: 0 24px 24px 0 !important; padding: 32px !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06) !important; flex: 1 !important; display: flex !important; flex-direction: column !important; overflow-x: hidden !important; position: relative !important; }
+  html[data-theme="dark"] .content { background-color: #1E293B !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important; }
+  .content .card, .content .glass, .content .sim-sec { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="aura" aria-hidden="true"><span class="aura__a"></span><span class="aura__b"></span></div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+<div class="toast" id="toast"></div>
+
+<div class="shell">
+  <!-- Sidebar — diisi otomatis oleh navbar.js -->
+  <aside class="side glass" id="side" data-page="simulator"></aside>
+
+  <main class="main">
+    <header class="topbar" style="margin:24px 32px 0 32px;border-radius:9999px;box-shadow:0 10px 30px -10px rgba(15,76,117,.15);">
+      <div class="topbar__title">
+        <p class="crumb">Workspace <span>/</span> <span id="bizNameCrumb">Analisis</span></p>
+        <h1>What-if Simulator</h1>
+      </div>
+      <label class="search glass">
+        <i data-lucide="search"></i>
+        <input type="search" placeholder="Cari metrik…" aria-label="Cari">
+        <kbd>⌘K</kbd>
+      </label>
+      <div class="topbar__tools">
+        <a href="dashboard.html" class="btn btn--ghost btn--sm" id="btnDashboard"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+        <div class="avatar" id="avatarEl">BZ</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Hero: data asli vs simulasi -->
+      <section class="card glass p-6 reveal">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center">
+          <div>
+            <p class="card__label">Data Asli (Baseline)</p>
+            <h2 style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:clamp(20px,2vw,28px);margin:8px 0 4px;color:#384B70">Simulasikan Skenario Bisnis</h2>
+            <p style="font-size:13.5px;color:#64748B;margin:0 0 20px">Geser slider di bawah untuk melihat dampak perubahan data secara instan. Semua metrik dihitung ulang secara realtime.</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <div style="border:1px solid #E6EBF2;border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+                <p class="card__label" style="margin:0">Profit Asli</p>
+                <p style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;margin:4px 0 0;color:#384B70;font-variant-numeric:tabular-nums">Rp<span id="origProfit">0</span></p>
+              </div>
+              <div style="border:1px solid #E6EBF2;border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+                <p class="card__label" style="margin:0">BEP Asli</p>
+                <p style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;margin:4px 0 0;color:#384B70;font-variant-numeric:tabular-nums"><span id="origBep">0</span> unit</p>
+              </div>
+              <div style="border:1px solid #E6EBF2;border-radius:14px;padding:12px 18px;text-align:center;min-width:100px">
+                <p class="card__label" style="margin:0">Score Asli</p>
+                <p style="font-family:'Inter Tight',sans-serif;font-weight:700;font-size:18px;margin:4px 0 0;font-variant-numeric:tabular-nums" id="origScore">0</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="card__label">Hasil Simulasi Sekarang</p>
+            <div class="metrics-2x2" style="margin-top:12px">
+              <div class="metric-box"><p class="metric-box-label">Health Score</p><p class="metric-box-val" id="simScore">—</p></div>
+              <div class="metric-box"><p class="metric-box-label">Net Profit</p><p class="metric-box-val" id="simProfit">—</p></div>
+              <div class="metric-box"><p class="metric-box-label">ROI</p><p class="metric-box-val" id="simRoi">—</p></div>
+              <div class="metric-box"><p class="metric-box-label">BEP</p><p class="metric-box-val" id="simBep">—</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Simulator -->
+      <div class="sim-grid reveal" style="transition-delay:80ms">
+        <!-- Sliders -->
+        <article class="card glass p-6">
+          <div class="card__head">
+            <div>
+              <p class="card__label">Parameter Simulasi</p>
+              <p style="font-size:13px;color:#64748B;margin:4px 0 0">Ubah nilai untuk lihat dampak instan</p>
+            </div>
+            <button class="btn btn--ghost btn--sm" id="resetBtn" type="button">Reset</button>
+          </div>
+          <!-- Harga Jual -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label">Harga Jual / unit</span>
+              <span class="slider-val" id="vPrice">Rp0</span>
+            </div>
+            <div class="slider-row">
+              <button class="step-btn" data-target="sPrice" data-step="-1000">−</button>
+              <input type="range" id="sPrice" class="biz-range">
+              <button class="step-btn" data-target="sPrice" data-step="1000">+</button>
+            </div>
+            <span class="slider-hint" id="hintPrice"></span>
+          </div>
+          <!-- Biaya Produksi -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label">Biaya Produksi / unit</span>
+              <span class="slider-val" id="vCost">Rp0</span>
+            </div>
+            <div class="slider-row">
+              <button class="step-btn" data-target="sCost" data-step="-500">−</button>
+              <input type="range" id="sCost" class="biz-range">
+              <button class="step-btn" data-target="sCost" data-step="500">+</button>
+            </div>
+            <span class="slider-hint" id="hintCost"></span>
+          </div>
+          <!-- Penjualan -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label">Penjualan / Bulan</span>
+              <span class="slider-val" id="vUnits">0 unit</span>
+            </div>
+            <div class="slider-row">
+              <button class="step-btn" data-target="sUnits" data-step="-100">−</button>
+              <input type="range" id="sUnits" class="biz-range">
+              <button class="step-btn" data-target="sUnits" data-step="100">+</button>
+            </div>
+            <span class="slider-hint" id="hintUnits"></span>
+          </div>
+          <!-- Biaya Ops -->
+          <div class="slider-group">
+            <div class="slider-header">
+              <span class="slider-label">Biaya Operasional / Bulan</span>
+              <span class="slider-val" id="vOps">Rp0</span>
+            </div>
+            <div class="slider-row">
+              <button class="step-btn" data-target="sOps" data-step="-500000">−</button>
+              <input type="range" id="sOps" class="biz-range">
+              <button class="step-btn" data-target="sOps" data-step="500000">+</button>
+            </div>
+            <span class="slider-hint" id="hintOps"></span>
+          </div>
+        </article>
+
+        <!-- Live Preview -->
+        <article class="card glass p-6">
+          <div class="card__head">
+            <div>
+              <p class="card__label">Preview Realtime</p>
+              <p style="font-size:13px;color:#64748B;margin:4px 0 0">Berubah setiap slider digeser</p>
+            </div>
+            <span class="tag" id="deltaBadge">Belum ada perubahan</span>
+          </div>
+          <div id="simChart" style="height:200px;position:relative"></div>
+          <p id="pNote" style="font-size:13px;margin-top:12px;color:#64748B;text-align:center">Geser slider untuk memulai simulasi…</p>
+        </article>
+      </div>
+
+      <!-- Comparison Table -->
+      <article class="card glass p-6 reveal" style="transition-delay:160ms">
+        <div class="card__head">
+          <div>
+            <p class="card__label">Perbandingan Skenario</p>
+            <p style="font-size:13px;color:#64748B;margin:4px 0 0">Data asli vs simulasi saat ini</p>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Metrik</th>
+                <th>Data Asli</th>
+                <th>Simulasi</th>
+                <th>Perubahan</th>
+              </tr>
+            </thead>
+            <tbody id="compBody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Save Simulation -->
+      <article class="card glass p-6 reveal" style="transition-delay:240ms">
+        <div class="card__head">
+          <p class="card__label">Simpan Skenario</p>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="simNameInput" placeholder="Nama skenario (cth: Kenaikan harga 10%)…" style="flex:1;padding:10px 16px;border:1px solid #E6EBF2;border-radius:12px;font-size:13.5px;outline:none;background:rgba(255,253,240,.7);font-family:'Inter',sans-serif;min-width:220px">
+          <button class="btn" type="button" id="simSaveBtn"><i data-lucide="save"></i>Simpan</button>
+        </div>
+        <div id="savedSimList" style="margin-top:16px"></div>
+      </article>
+
+    </div><!-- /content -->
+
+    <footer style="padding:16px 32px;border-top:1px solid #E6EBF2;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#64748B">
+      <span>BizLens · <span id="footBizName">Analisis</span> · Simulasi What-If</span>
+      <a href="workspace.html" style="color:#0F4C75;font-weight:500;text-decoration:none">← Workspace</a>
+    </footer>
+  </main>
+</div>
+
+<script src="vendor/jquery-3.7.1.min.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/icons.js"></script><script src="js/biz-core.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/simulator-app.js"></script>
+</body>
+</html>
+
+

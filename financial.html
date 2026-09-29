@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial Insight - BizLens</title>
+  <link rel="stylesheet" href="css/tailwind-built.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .glass{background:rgba(255,255,255,.7);backdrop-filter:blur(22px) saturate(1.4);border:1px solid #E6EBF2}
+    .card{background:#FFF;border:1px solid #E6EBF2;border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:9999px;font-weight:500;font-size:14px;transition:all 300ms;background:#0F4C75;color:#FFF;border:1px solid transparent;cursor:pointer;text-decoration:none}
+    .btn:hover{background:#384B70;transform:translateY(-2px);box-shadow:0 4px 12px rgba(15,76,117,.25)}
+    .btn--ghost{background:transparent;color:#1F2937;border-color:#E6EBF2}
+    .btn--ghost:hover{background:rgba(230,235,242,.4);transform:none;box-shadow:none}
+    .btn--sm{padding:8px 16px;font-size:13px}
+    .tag{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:9999px;font-size:11.5px;font-weight:500;border:1px solid #E6EBF2;color:#64748B}
+    .tag--up{background:rgba(94,159,110,.1);border-color:rgba(94,159,110,.2);color:#5E9F6E}
+    .tag--warn{background:rgba(217,164,65,.1);border-color:rgba(217,164,65,.2);color:#D9A441}
+    .tag--dn{background:rgba(217,108,108,.1);border-color:rgba(217,108,108,.2);color:#D96C6C}
+    body{background:#FFFDF0;color:#1F2937;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;margin:0}
+    .grain{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:.2;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.32'/%3E%3C/svg%3E")}
+    .aura{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .aura span{position:absolute;border-radius:9999px;filter:blur(100px)}
+    .aura__a{width:46vw;height:46vw;left:-10vw;top:-14vw;background:rgba(15,76,117,.08)}
+    .aura__b{width:40vw;height:40vw;right:-10vw;top:26vh;background:rgba(56,75,112,.08)}
+    .cursor-glow{position:fixed;top:0;left:0;width:420px;height:420px;border-radius:9999px;z-index:1;pointer-events:none;opacity:0;transition:opacity 300ms;transform:translate3d(-50%,-50%,0);background:radial-gradient(circle,rgba(15,76,117,.06),transparent 62%)}
+    .cursor-glow.is-on{opacity:1}
+    .side{position:fixed;left:12px;top:12px;bottom:12px;width:230px;z-index:50;border-radius:20px;display:flex;flex-direction:column;padding:20px;gap:4px;overflow-y:auto}
+    .side__brand{display:flex;align-items:center;gap:10px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:15.5px;color:#384B70;margin-bottom:20px;text-decoration:none}
+    .nav__mark{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4.5px;background:linear-gradient(135deg,#0F4C75,#384B70);flex:none}
+    .nav__mark i{width:10px;height:10px;background:#fff;border-radius:50%;display:block}
+    .side__cap{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(100,116,139,.6);margin:12px 0 4px;padding:0 12px}
+    .side__item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;font-size:13.5px;color:#64748B;font-weight:500;text-decoration:none;transition:all 200ms}
+    .side__item i{width:17px;height:17px;flex:none}
+    .side__item:hover{background:rgba(230,235,242,.5);color:#1F2937}
+    .side__item.is-active{background:rgba(15,76,117,.1);color:#0F4C75}
+    .side__foot{margin-top:auto;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+    .side__foot-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(100,116,139,.6);margin:0}
+    .side__foot-num{margin:0;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:22px;color:#384B70;line-height:1}
+    .side__foot-num i{font-family:'Inter',sans-serif;font-weight:400;font-size:12px;color:#64748B;font-style:normal}
+    .mini-bar{height:6px;background:#E6EBF2;border-radius:9999px;overflow:hidden;margin-top:8px}
+    .mini-bar i{display:block;height:100%;background:#0F4C75;border-radius:9999px;transition:all 500ms;font-style:normal}
+    .shell{display:flex;min-height:100vh}
+    .main{flex:1;display:flex;flex-direction:column;min-height:100vh;padding-left:258px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 24px;border:1px solid #E6EBF2;border-radius:20px;margin:12px 12px 0 0;background:rgba(255,255,255,.6);backdrop-filter:blur(16px);position:sticky;top:12px;z-index:40}
+    .topbar__title{flex:1 1 0%;min-width:0}
+    .crumb{margin:0;font-size:11.5px;color:#64748B}
+    .crumb span{color:rgba(100,116,139,.4);margin:0 4px}
+    h1{margin:0;font-family:'Inter Tight',sans-serif;font-weight:600;font-size:22px;color:#384B70}
+    .search{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:12px;border:1px solid #E6EBF2;background:rgba(255,253,240,.7);font-size:13.5px;width:260px;flex:none}
+    .search i{width:16px;height:16px;flex:none}
+    .search input{background:transparent;outline:none;width:100%;font-size:13.5px;color:#1F2937}
+    .search input::placeholder{color:rgba(100,116,139,.5)}
+    .search kbd{font-size:11px;color:rgba(100,116,139,.4);border:1px solid #E6EBF2;border-radius:4px;padding:0 4px}
+    .topbar__tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex:1 1 0%;min-width:0}
+    .avatar{width:36px;height:36px;border-radius:9999px;background:linear-gradient(135deg,#0F4C75,#384B70);color:#FFF;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+    .content{display:flex;flex-direction:column;gap:24px;padding:0 32px 32px;margin-top:24px}
+    .card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+    .card__label{margin:0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#64748B}
+    .card__foot{margin:0;font-size:12px;color:#64748B}
+    .reveal{opacity:0;transform:translateY(20px);transition:all 500ms}
+    .reveal.is-in{opacity:1;transform:none}
+    
+    .donut-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:260px}
+    .donut-wrap>div:first-child{width:220px;height:220px;flex:none}
+    .donut__center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+    .donut__center b{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:36px;color:#384B70}
+    .donut__center span{font-size:11px;color:#64748B;text-align:center}
+    .legend{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:8px}
+    .legend li{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#64748B}
+    .legend li b{font-weight:500;color:#1F2937;font-variant-numeric:tabular-nums}
+    .fin-table{width:100%;border-collapse:collapse;font-size:13.5px}
+    .fin-table th{text-align:left;padding:10px 16px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#64748B;border-bottom:1px solid #E6EBF2;font-weight:500}
+    .fin-table td{padding:12px 16px;border-bottom:1px solid rgba(230,235,242,.5);font-variant-numeric:tabular-nums}
+    .fin-table tr:last-child td{border-bottom:none}
+    .ratio-grid{display:grid;gap:16px}
+    @media(min-width:768px){.ratio-grid{grid-template-columns:repeat(4,1fr)}}
+    .ratio-card{border:1px solid #E6EBF2;border-radius:18px;padding:18px}
+    .ratio-val{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.02em;margin:6px 0 4px}
+    .ratio-bar{height:6px;background:#E6EBF2;border-radius:9999px;overflow:hidden;margin-top:10px}
+    .ratio-bar i{display:block;height:100%;border-radius:9999px;font-style:normal;transition:width 800ms cubic-bezier(.4,0,.2,1)}
+    .efisiensi-item{display:flex;gap:16px;padding:16px;border:1px solid #E6EBF2;border-radius:14px}
+    .efisiensi-num{width:32px;height:32px;border-radius:9999px;background:#0F4C75;color:#FFF;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex:none}
+    .seg{display:flex;gap:4px;padding:4px;border-radius:9999px;background:#FFFDF0;border:1px solid #E6EBF2}
+    .seg__btn{padding:6px 14px;border-radius:9999px;font-size:12.5px;font-weight:500;color:#64748B;border:none;background:transparent;transition:all 200ms;cursor:pointer}
+    .seg__btn.is-on{background:#FFF;color:#0F4C75;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  </style>
+<style>
+  /* Premium layout overrides */
+  body { background-color: #F1F5F9 !important; }
+  html[data-theme="dark"] body { background-color: #0F172A !important; }
+  .side { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; left: 24px !important; top: 24px !important; bottom: 24px !important; }
+  .main { padding-left: 96px !important; padding-top: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
+  .topbar { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(226,235,242,0.8) !important; box-shadow: 0 4px 20px rgba(15,76,117,0.08) !important; backdrop-filter: blur(16px) !important; padding: 16px 24px !important; margin: 16px 24px 0 16px !important; border-radius: 16px !important; }
+  html[data-theme="dark"] .topbar { background: rgba(15,23,42,0.85) !important; border-color: rgba(42,49,64,0.8) !important; }
+  .search { background-color: #FFFFFF !important; border-radius: 9999px !important; border: 1px solid transparent !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; padding: 12px 24px !important; width: 320px !important; }
+  html[data-theme="dark"] .search { background-color: #1E293B !important; }
+  .icon-btn, .avatar { background-color: #FFFFFF !important; border: none !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; }
+  html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .avatar { background-color: #1E293B !important; }
+  .content { background-color: #FFFFFF !important; border-radius: 32px !important; margin: 0 24px 24px 0 !important; padding: 32px !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06) !important; flex: 1 !important; display: flex !important; flex-direction: column !important; overflow-x: hidden !important; position: relative !important; }
+  html[data-theme="dark"] .content { background-color: #1E293B !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important; }
+  .content .card, .content .glass, .content .sim-sec { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+</style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="aura"><span class="aura__a"></span><span class="aura__b"></span></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <div class="shell">
+    <!-- Sidebar — diisi otomatis oleh navbar.js -->
+    <aside class="side glass" id="side" data-page="financial"></aside>
+
+    <main class="main">
+      <header class="topbar" style="margin:24px 32px 0 32px;border-radius:9999px;box-shadow:0 10px 30px -10px rgba(15,76,117,0.15);">
+        <div class="topbar__title">
+          <p class="crumb">Workspace <span>/</span> <span id="bizNameCrumb">Analisis</span></p>
+          <h1>Financial Insight</h1>
+        </div>
+        <label class="search glass">
+          <i data-lucide="search"></i>
+          <input type="search" placeholder="Cari metrik…" aria-label="Cari">
+          <kbd>⌘K</kbd>
+        </label>
+        <div class="topbar__tools">
+          <a href="dashboard.html" class="btn btn--ghost btn--sm" id="btnDashboard"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+          <div class="avatar" id="avatarEl">BZ</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 reveal">
+          <div class="card p-6">
+            <p class="card__label mb-2">Revenue Total</p>
+            <p class="text-3xl font-bold text-slate-800 m-0" id="finRevenue">0</p>
+            <span class="tag tag--up mt-3">Target Tercapai</span>
+          </div>
+          <div class="card p-6">
+            <p class="card__label mb-2">Total Biaya</p>
+            <p class="text-3xl font-bold text-slate-800 m-0" id="finBiaya">0</p>
+            <span class="tag tag--warn mt-3">Perlu Efisiensi</span>
+          </div>
+          <div class="card p-6">
+            <p class="card__label mb-2">Net Profit</p>
+            <p class="text-3xl font-bold m-0" id="finProfit">0</p>
+            <span class="tag mt-3" id="finProfitTag">--</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 reveal">
+          <div class="md:col-span-4 card glass p-6">
+            <h3 class="font-bold text-lg text-slate-800 mb-4">Komposisi Biaya</h3>
+            <div class="donut-wrap">
+              <div id="donut"></div>
+              <div class="donut__center">
+                <b id="donutVal">0%</b>
+                <span>Total<br>Biaya</span>
+              </div>
+            </div>
+            <ul class="legend mt-6" id="donutLegend"></ul>
+          </div>
+          <div class="md:col-span-8 card p-0 overflow-hidden">
+            <div class="p-6 border-b border-slate-100">
+              <h3 class="font-bold text-lg text-slate-800 m-0">Rincian Biaya</h3>
+            </div>
+            <table class="fin-table">
+              <thead>
+                <tr>
+                  <th>Kategori</th>
+                  <th>Jumlah</th>
+                  <th>% Revenue</th>
+                </tr>
+              </thead>
+              <tbody id="finTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card glass p-6 reveal">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-bold text-lg text-slate-800 m-0">Trend 12 Bulan</h3>
+            <div class="seg" id="periodToggle">
+              <button class="seg__btn" data-val="3">3 Bln</button>
+              <button class="seg__btn" data-val="6">6 Bln</button>
+              <button class="seg__btn is-on" data-val="12">12 Bln</button>
+            </div>
+          </div>
+          <div id="costChart" style="height:280px"></div>
+          <div class="flex justify-center gap-6 mt-4">
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#0F4C75]"></span><span class="text-xs text-slate-500">Revenue</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#D9A441]"></span><span class="text-xs text-slate-500">Biaya Total</span></div>
+            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#5E9F6E]"></span><span class="text-xs text-slate-500">Net Profit</span></div>
+          </div>
+        </div>
+
+        <div class="ratio-grid reveal">
+          <div class="ratio-card">
+            <p class="card__label">Gross Margin</p>
+            <p class="ratio-val" id="ratioGross">--</p>
+            <p class="text-xs text-slate-500 m-0">Target: >30%</p>
+            <div class="ratio-bar"><i id="barGross" style="width:0%"></i></div>
+          </div>
+          <div class="ratio-card">
+            <p class="card__label">Net Margin</p>
+            <p class="ratio-val" id="ratioNet">--</p>
+            <p class="text-xs text-slate-500 m-0">Target: >20%</p>
+            <div class="ratio-bar"><i id="barNet" style="width:0%"></i></div>
+          </div>
+          <div class="ratio-card">
+            <p class="card__label">Cost Ratio</p>
+            <p class="ratio-val" id="ratioCost">--</p>
+            <p class="text-xs text-slate-500 m-0">Target: <80%</p>
+            <div class="ratio-bar"><i id="barCost" style="width:0%"></i></div>
+          </div>
+          <div class="ratio-card">
+            <p class="card__label">ROI Tahunan</p>
+            <p class="ratio-val" id="ratioRoi">--</p>
+            <p class="text-xs text-slate-500 m-0">Target: >20%</p>
+            <div class="ratio-bar"><i id="barRoi" style="width:0%"></i></div>
+          </div>
+        </div>
+
+        <div class="reveal">
+          <h3 class="font-bold text-lg text-slate-800 mb-4">Rekomendasi Efisiensi</h3>
+          <div class="grid grid-cols-1 gap-4" id="efisiensiList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="vendor/jquery-3.7.1.min.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/icons.js"></script><script src="js/biz-core.js"></script>
+  <script src="js/navbar.js"></script>
+  <script src="js/financial-app.js"></script>
+</body>
+</html>
+
+
