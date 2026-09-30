@@ -10,8 +10,6 @@
     { id: 'simulator',  label: 'What-if Simulator',  icon: 'sliders-horizontal',    href: 'simulator.html'  },
     { id: 'ai',         label: 'Rekomendasi Cerdas', icon: 'sparkles',              href: 'ai.html'         },
     { id: 'financial',  label: 'Financial Insight',  icon: 'wallet',                href: 'financial.html'  },
-    { id: 'recent',     label: 'Recent Analysis',    icon: 'history',               href: 'recent.html'     },
-    { id: 'timeline',   label: 'Business Timeline',  icon: 'git-commit-horizontal', href: 'timeline.html'   },
     { id: 'report',     label: 'Business Report',    icon: 'file-down',             href: 'report.html'     }
   ];
 

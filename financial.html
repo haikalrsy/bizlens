@@ -87,6 +87,165 @@
     .seg{display:flex;gap:4px;padding:4px;border-radius:9999px;background:#FFFDF0;border:1px solid #E6EBF2}
     .seg__btn{padding:6px 14px;border-radius:9999px;font-size:12.5px;font-weight:500;color:#64748B;border:none;background:transparent;transition:all 200ms;cursor:pointer}
     .seg__btn.is-on{background:#FFF;color:#0F4C75;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  
+    /* ============================================================
+   BizLens — Tablet / iPad layer
+   Aktif hanya 768px–1199px. Muat PALING AKHIR setelah semua CSS.
+   ============================================================ */
+
+/* ---------- Guard umum (semua ukuran tablet) ---------- */
+@media (min-width: 768px) and (max-width: 1199px) {
+  html, body { max-width: 100%; overflow-x: hidden; }
+  img, svg, canvas, video { max-width: 100%; }
+  .content, .main, .card, .glass { min-width: 0; }   /* cegah grid child melebar */
+  .kpi__num, .ratio-val, .scenario-val, .metric-box-val,
+  .prog-val, .kpi-val, .chart-card__sum { overflow-wrap: anywhere; }
+
+  /* Touch target ~44px */
+  .btn, .btn--sm, .seg__btn, .step, .step-btn, .icon-btn,
+  .act, .edu-tab, .side__item { min-height: 44px; }
+  .btn--sm { padding-top: 10px; padding-bottom: 10px; }
+  .step, .step-btn { min-width: 44px; width: 44px; height: 44px; }
+  .seg__btn { padding: 10px 14px; }
+  .saved-card__del { width: 44px; height: 44px; }
+  .info {
+    width: 24px; height: 24px; font-size: 12px;
+    position: relative;
+  }
+  .info::after { content: ""; position: absolute; inset: -10px; } /* area sentuh 44px */
+  input[type=range] { min-height: 44px; touch-action: pan-y; }
+  input[type=range].biz-range { height: 44px; }
+  input, select, textarea { font-size: 16px; min-height: 44px; } /* cegah zoom iOS */
+
+  /* Tabel: hanya wrapper yang scroll */
+  .fin-table, .comp-table { min-width: 520px; }
+  .card:has(> .fin-table), .card:has(> table) { overflow-x: auto; }
+
+  /* Modal */
+  .edu-modal { max-width: min(700px, calc(100vw - 48px)); max-height: 90vh; }
+  .edu-modal__panes { overscroll-behavior: contain; }
+  .edu-modal__close { width: 44px !important; height: 44px !important; }
+}
+
+/* ---------- Perangkat sentuh: matikan efek hover-only ---------- */
+@media (hover: none) {
+  .cursor-glow { display: none !important; }
+  .btn:hover, .rek-card:hover, .act:hover, .feed__item:hover,
+  .analysis-card:hover, .saved-card:hover, .saved-sim-card:hover {
+    transform: none; box-shadow: inherit;
+  }
+}
+
+/* ============================================================
+   PORTRAIT: 768–1023px  (iPad Mini, iPad, Air, Pro 11)
+   Sidebar = drawer, konten 1 kolom / 2 kolom kartu
+   ============================================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Sidebar jadi drawer (perilaku sama dengan mobile) */
+  .side { display: none !important; }
+  .side.is-open {
+    display: flex !important; position: fixed !important;
+    left: 0 !important; top: 0 !important; bottom: 0 !important;
+    width: 280px !important; z-index: 999 !important;
+    background: rgba(255,255,255,.96) !important;
+    backdrop-filter: blur(16px) !important;
+    border-radius: 0 24px 24px 0 !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,.12) !important; padding: 24px !important;
+  }
+  html[data-theme="dark"] .side.is-open { background: rgba(15,23,42,.96) !important; }
+  .side-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 998; }
+  .side-overlay.is-open { display: block; }
+  .menu-btn { display: flex !important; flex: none; }
+  .main { padding-left: 0 !important; padding-right: 0 !important; }
+
+  /* Topbar: 2 baris (judul+tools, lalu search) */
+  .topbar {
+    flex-wrap: wrap; gap: 12px !important;
+    margin: 16px 20px 0 20px !important;
+    padding: 12px 20px !important; border-radius: 24px !important;
+  }
+  .topbar__title { flex: 1 1 auto; }
+  .topbar__tools { flex: 0 0 auto; }
+  .search { order: 3; flex: 1 1 100% !important; width: 100% !important; }
+
+  .content { margin: 16px 20px 20px 20px !important; padding: 24px !important; gap: 20px; border-radius: 28px !important; }
+  .main__foot { padding: 16px 20px; }
+  h1 { font-size: 20px; }
+
+  /* Dashboard */
+  .hero { grid-template-columns: 1fr; gap: 20px; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 14px; }
+  .kpi__num { font-size: clamp(22px, 3.2vw, 28px); }
+  .ai-row { grid-template-columns: 1fr; }
+  #radar { grid-template-columns: 1fr; }
+  .bottom { grid-template-columns: 1fr; }
+  .actions__grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .chart-box, #mainChart { min-height: 260px; }
+
+  /* Financial */
+  .ratio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Simulator */
+  .sim-grid { grid-template-columns: 1fr; }
+  .sim-sec__body { grid-template-columns: 1fr; }
+  .metrics-2x2 { grid-template-columns: 1fr 1fr; }
+  section.card > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important; gap: 20px !important;
+  }
+
+  /* AI (Cermin Bisnis): tumpuk, lebar baca nyaman */
+  .md\:col-span-5, .md\:col-span-7 { grid-column: 1 / -1; }
+  #aiThread .bubble { max-width: 68ch; }
+  .rek-card { padding: 18px; }
+
+  /* Recent, Workspace, Timeline */
+  .analysis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .new-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #savedGrid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .achieve-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ============================================================
+   LANDSCAPE / lebar: 1024–1199px (iPad landscape, Pro 12.9 portrait)
+   Sidebar rail ikon 72px, konten memakai ruang horizontal
+   ============================================================ */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .side {
+    width: 72px !important; padding: 16px 12px !important;
+    align-items: center; left: 12px !important; top: 12px !important; bottom: 12px !important;
+    background: rgba(255,255,255,.7) !important;
+    border: 1px solid #E6EBF2 !important; border-radius: 20px !important;
+    backdrop-filter: blur(16px) !important;
+  }
+  html[data-theme="dark"] .side { background: rgba(20,24,31,.72) !important; border-color: #2A3140 !important; }
+  .side__item { justify-content: center; padding: 0; width: 48px; height: 48px; font-size: 0; gap: 0; }
+  .side__item i { width: 20px; height: 20px; }
+  .side__cap, .side__foot, .side__brand span { display: none !important; }
+  .side__brand { margin-bottom: 12px; justify-content: center; }
+  .main { padding-left: 100px !important; }
+  .menu-btn { display: none !important; }
+
+  .topbar { margin: 16px 20px 0 12px !important; padding: 12px 20px !important; }
+  .search { width: 240px !important; }
+  .content { margin: 16px 20px 20px 12px !important; padding: 28px !important; }
+
+  /* Dashboard */
+  .hero { grid-template-columns: 1.2fr .8fr; gap: 24px; }
+  .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 12px; }
+  .kpi__num { font-size: clamp(18px, 2.2vw, 24px); }
+  .ai-row { grid-template-columns: 1.3fr 1fr; }
+  #radar { grid-template-columns: 1fr 1fr; }
+  .actions__grid { grid-template-columns: repeat(5, 1fr) !important; }
+
+  /* Simulator: input | hasil berdampingan */
+  .sim-grid { grid-template-columns: 1fr 1fr; }
+  .ratio-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ratio-val { font-size: 24px; }
+  .analysis-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* Cermin Bisnis: 5/7 tetap, tapi bubble dibatasi */
+  #aiThread .bubble { max-width: 60ch; }
+}
   </style>
 </head>
 <body>
