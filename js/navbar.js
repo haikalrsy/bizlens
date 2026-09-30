@@ -425,13 +425,16 @@
     brand.className = 'biz-brand';
     brand.href = 'workspace.html';
     brand.setAttribute('aria-label', 'BizLens Home');
-    brand.innerHTML =
-      '<span class="biz-brand__mark">' +
-      '  <img src=logo.png alt="Logo" class="biz-brand__img biz-logo-light">' +
-      '  <img src=logoblackmode.png alt="Logo Dark" class="biz-brand__img biz-logo-dark">' +
-      '</span>' +
-      '<span class="biz-brand__name">BizLens</span>';
-    sidebar.appendChild(brand);
+    brand.innerHTML = 
+  '<a href="index.html" class="biz-brand__link">' +
+  '  <span class="biz-brand__mark">' + 
+  '    <img src="logo.png" alt="Logo" class="biz-brand__img biz-logo-light">' + 
+  '    <img src="logoblackmode.png" alt="Logo Dark" class="biz-brand__img biz-logo-dark">' + 
+  '  </span>' + 
+  '  <span class="biz-brand__name">BizLens</span>' +
+  '</a>';
+
+sidebar.appendChild(brand);
     /* ----------------------------------- */
 
     var divider = document.createElement('div');
