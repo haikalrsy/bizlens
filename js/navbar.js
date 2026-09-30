@@ -243,19 +243,150 @@
       html[data-theme="dark"] .biz-health__score { color: #E2E8F0; }
       html[data-theme="dark"] .biz-health__bar { background: #2A3140; }
 
-      @media (max-width: 820px) {
-        body { padding-left: 0; padding-bottom: 56px; }
+      /* ── Desktop: main offset sesuai lebar sidebar 80px ── */
+      .shell .main { padding-left: 80px; }
+      .menu-btn { display: none !important; }
+
+      /* Global Failsafe untuk Mencegah Overflow Horizontal */
+      html { overflow-x: clip !important; max-width: 100vw !important; overflow-y: auto !important; }
+      body { overflow-x: clip !important; max-width: 100vw !important; overflow-y: auto !important; min-height: auto !important; }
+      *, *::before, *::after { box-sizing: border-box !important; }
+      .shell { max-width: 100vw; overflow-x: clip; overflow-y: visible !important; height: auto !important; }
+      .main { box-sizing: border-box !important; max-width: 100vw !important; overflow-x: clip !important; overflow-y: visible !important; min-width: 0 !important; flex: 1; height: auto !important; min-height: auto !important; }
+      .content { box-sizing: border-box !important; max-width: 100% !important; overflow-x: clip !important; overflow-y: visible !important; }
+      .content > * { max-width: 100% !important; box-sizing: border-box !important; min-width: 0 !important; }
+      .card, .glass, .sim-sec { max-width: 100% !important; box-sizing: border-box !important; }
+      .card > div, .glass > div { max-width: 100%; min-width: 0; }
+      .stat-row > *, .two-col > *, .bench-row > *, .ratio-grid > *, .sim-grid > *, .analysis-grid > *, .stats-grid > *, .new-cards-grid > *, .timeline > *, .step > * { min-width: 0 !important; max-width: 100% !important; }
+      table { max-width: 100% !important; }
+
+      /* ── Tablet & Mobile (≤1024px) ──────────────────────── */
+      @media (max-width: 1024px) {
+        /* Force single column for complex grids on tablet */
+        .stat-row, .analysis-grid, .stats-grid { grid-template-columns: repeat(2, 1fr) !important; } .two-col, .ratio-grid, .sim-grid, .bench-row { grid-template-columns: repeat(2, 1fr) !important; } .timeline, .step { grid-template-columns: 1fr !important; }
+        
+        .new-cards-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important; }
+        .kpis { grid-template-columns: repeat(2, 1fr) !important; }
+        /* Sidebar jadi drawer overlay */
         .biz-sidebar {
-          width: 100%; height: 60px;
-          bottom: 0; top: auto; left: 0;
-          flex-direction: row; justify-content: space-around;
-          padding: 0 10px; border-right: none;
-          border-top: 1px solid rgba(15,76,117,0.12);
+          width: 260px;
+          align-items: flex-start;
+          padding: 20px 0;
+          transform: translateX(-100%);
+          transition: transform 0.3s cubic-bezier(.4,0,.2,1), opacity 0.3s cubic-bezier(.4,0,.2,1);
+          opacity: 0;
+          pointer-events: none;
         }
-        .biz-sidebar-divider, .biz-nav-spacer, .biz-health, .biz-util-group { display: none; }
-        .biz-nav-group { flex-direction: row; gap: 4px; }
-        .biz-icon-btn { margin: 0; }
-        .biz-tooltip { display: none !important; }
+        .biz-sidebar.is-open {
+          transform: translateX(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        /* Nav items: tampilkan label teks */
+        .biz-nav-group, .biz-util-group {
+          align-items: flex-start;
+          width: 100%;
+          padding: 0 16px;
+        }
+        .biz-icon-btn {
+          width: 100%;
+          justify-content: flex-start;
+          gap: 12px;
+          padding: 0 12px;
+          border-radius: 10px;
+          height: 46px;
+        }
+        .biz-tooltip {
+          position: static;
+          transform: none !important;
+          opacity: 1;
+          background: transparent;
+          color: inherit;
+          font-size: 13.5px;
+          font-weight: 500;
+          padding: 0;
+          box-shadow: none;
+          pointer-events: none;
+          transition: none;
+          white-space: nowrap;
+        }
+        .biz-tooltip::before { display: none; }
+
+        /* Brand expand */
+        .biz-brand { justify-content: flex-start; padding: 8px 20px 20px; }
+        .biz-brand__mark { width: 36px; height: 36px; }
+        .biz-brand__name {
+          display: block;
+          font-family: 'Inter Tight', sans-serif;
+          font-weight: 600; font-size: 16px; color: #384B70;
+          margin-left: 10px;
+        }
+        html[data-theme="dark"] .biz-brand__name { color: #C9D3E3; }
+
+        /* Health widget horizontal */
+        .biz-health {
+          flex-direction: row; gap: 10px;
+          margin: 0 16px 8px;
+          align-items: center;
+          width: calc(100% - 32px);
+          box-sizing: border-box;
+        }
+        .biz-health__bar { width: 60px; margin-top: 0; }
+
+        /* Overlay */
+        .side-overlay {
+          display: none; position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.4);
+          z-index: 240; backdrop-filter: blur(2px);
+        }
+        .side-overlay.is-open { display: block; }
+
+        /* Main: reset offset sidebar */
+        .shell .main { padding-left: 0 !important; }
+        .main { padding-left: 0 !important; }
+
+        /* Topbar reflow */
+        .topbar {
+          margin: 12px 12px 0 12px !important;
+          padding: 10px 14px !important;
+          flex-wrap: wrap;
+          gap: 10px !important;
+        }
+        .topbar__title {
+          display: flex !important;
+          align-items: center !important;
+          gap: 12px !important;
+          flex: 1 1 auto !important;
+          min-width: 0 !important;
+        }
+        .search {
+          flex: 1 1 100% !important;
+          width: 100% !important;
+          order: 3 !important;
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .search kbd { display: none; }
+
+        /* Content */
+        .content { margin: 12px !important; padding: 20px !important; border-radius: 20px !important; }
+
+        /* Tampilkan hamburger */
+        .menu-btn { display: flex !important; flex: none; }
+      }
+
+      /* ── Mobile kecil (≤600px) ──────────────────────────── */
+      @media (max-width: 600px) {
+        .stat-row, .two-col, .bench-row, .ratio-grid, .sim-grid, .analysis-grid, .stats-grid, .timeline, .step { grid-template-columns: 1fr !important; }
+        .topbar { margin: 8px !important; padding: 10px 12px !important; }
+        .content { margin: 8px !important; padding: 16px !important; border-radius: 16px !important; }
+      }
+
+      @media print {
+        .biz-sidebar, .side-overlay { display: none !important; }
+        .shell .main, .main { padding-left: 0 !important; }
       }
     `;
     document.head.appendChild(s);
@@ -275,13 +406,15 @@
   function buildNav() {
     injectCSS();
 
-    var sideEl     = document.getElementById('side');
-    var activePage = sideEl ? (sideEl.getAttribute('data-page') || '') : '';
+    var path = window.location.pathname;
+    var filename = path.split('/').pop().split('.')[0] || 'index';
+    if (filename === 'index') filename = 'dashboard';
+    
+    var activePage = filename;
     var data       = getLatestAnalysis();
     var score      = hitungSkor(data);
     var qp         = data ? '?id=' + data.id : '';
 
-    if (sideEl) sideEl.style.display = 'none';
     if (document.querySelector('.biz-sidebar')) return;
 
     var isWorkspace = activePage === 'workspace';
@@ -327,7 +460,7 @@
       health.className = 'biz-health';
       health.innerHTML =
         '<p class="biz-health__lbl">Score</p>' +
-        '<p class="biz-health__score">' + (data ? score : '—') + '<span>/100</span></p>' +
+        '<p class="biz-health__score"><span id="sideScore">' + (data ? score : '—') + '</span><span>/100</span></p>' +
         '<div class="biz-health__bar">' +
           '<i id="sideBar" style="width:' + (data ? score : 0) + '%;background:' + barColor + '"></i>' +
         '</div>';
@@ -342,6 +475,33 @@
     sidebar.appendChild(utilGroup);
 
     document.body.appendChild(sidebar);
+
+    // Mobile Menu Logic
+    var menuToggle = document.getElementById('menuToggle');
+    var sideOverlay = document.getElementById('sideOverlay');
+    if (!sideOverlay) {
+      sideOverlay = document.createElement('div');
+      sideOverlay.className = 'side-overlay';
+      sideOverlay.id = 'sideOverlay';
+      document.body.appendChild(sideOverlay);
+    }
+    
+    // Bind toggle events to the new biz-sidebar
+    if (menuToggle) {
+      // Replace existing listener by cloning (in case HTML bound it to the old sidebar)
+      var newToggle = menuToggle.cloneNode(true);
+      menuToggle.parentNode.replaceChild(newToggle, menuToggle);
+      
+      newToggle.addEventListener('click', function() {
+        sidebar.classList.add('is-open');
+        sideOverlay.classList.add('is-open');
+      });
+    }
+    
+    sideOverlay.addEventListener('click', function() {
+      sidebar.classList.remove('is-open');
+      sideOverlay.classList.remove('is-open');
+    });
 
     if (window.BizIcons && typeof window.BizIcons.paint === 'function') {
       window.BizIcons.paint();

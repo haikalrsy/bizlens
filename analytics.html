@@ -125,22 +125,6 @@
 
   @media print { .side, .topbar { display: none !important; } .main { padding-left: 0 !important; } }
 </style>
-<style>
-  /* Premium layout overrides */
-  body { background-color: #F1F5F9 !important; }
-  html[data-theme="dark"] body { background-color: #0F172A !important; }
-  .side { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; left: 24px !important; top: 24px !important; bottom: 24px !important; }
-  .main { padding-left: 96px !important; padding-top: 0 !important; padding-right: 0 !important; padding-bottom: 0 !important; gap: 0 !important; }
-  .topbar { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(226,235,242,0.8) !important; box-shadow: 0 4px 20px rgba(15,76,117,0.08) !important; backdrop-filter: blur(16px) !important; padding: 16px 24px !important; margin: 16px 24px 0 16px !important; border-radius: 16px !important; }
-  html[data-theme="dark"] .topbar { background: rgba(15,23,42,0.85) !important; border-color: rgba(42,49,64,0.8) !important; }
-  .search { background-color: #FFFFFF !important; border-radius: 9999px !important; border: 1px solid transparent !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; padding: 12px 24px !important; width: 320px !important; }
-  html[data-theme="dark"] .search { background-color: #1E293B !important; }
-  .icon-btn, .avatar { background-color: #FFFFFF !important; border: none !important; box-shadow: 0 4px 20px rgba(0,0,0,0.03) !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; }
-  html[data-theme="dark"] .icon-btn, html[data-theme="dark"] .avatar { background-color: #1E293B !important; }
-  .content { background-color: #FFFFFF !important; border-radius: 32px !important; margin: 0 24px 24px 0 !important; padding: 32px !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.06) !important; flex: 1 !important; display: flex !important; flex-direction: column !important; overflow-x: hidden !important; position: relative !important; }
-  html[data-theme="dark"] .content { background-color: #1E293B !important; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5) !important; }
-  .content .card, .content .glass, .content .sim-sec { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
-</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -149,14 +133,17 @@
 
 <div class="shell">
   <!-- Sidebar — diisi otomatis oleh navbar.js -->
-  <aside class="side glass" id="side" data-page="analytics"></aside>
+  
 
   <main class="main">
     <!-- Topbar -->
     <header class="topbar" style="margin:24px 32px 0 32px;border-radius:9999px;box-shadow:0 10px 30px -10px rgba(15,76,117,.15);">
-      <div class="topbar__title">
-        <p class="crumb">Workspace <span>/</span> <span id="bizNameCrumb">Analisis</span></p>
+      <div class="topbar__title" style="display: flex; align-items: center; gap: 12px;">
+        <button class="icon-btn glass menu-btn" id="menuToggle" aria-label="Menu" type="button"><i data-lucide="menu"></i></button>
+        <div>
+          <p class="crumb">Workspace <span>/</span> <span id="bizNameCrumb">Analisis</span></p>
         <h1>Analytics</h1>
+        </div>
       </div>
       <label class="search glass">
         <i data-lucide="search"></i>
@@ -297,7 +284,28 @@
 <script src="js/icons.js"></script><script src="js/biz-core.js"></script>
 <script src="js/navbar.js"></script>
 <script src="js/analytics-app.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menuToggle");
+    const side = document.getElementById("side");
+    const sideOverlay = document.getElementById("sideOverlay");
+    if(menuToggle && side && sideOverlay) {
+      menuToggle.addEventListener("click", () => {
+        side.classList.add("is-open");
+        sideOverlay.classList.add("is-open");
+      });
+      sideOverlay.addEventListener("click", () => {
+        side.classList.remove("is-open");
+        sideOverlay.classList.remove("is-open");
+      });
+    }
+  });
+</script>
 </body>
 </html>
+
+
+
 
 

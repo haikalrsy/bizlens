@@ -516,23 +516,83 @@ ul{margin:0;padding:0;list-style:none}
   .case__stats{grid-template-columns:1fr 1fr 1fr}
 }
 @media (max-width:820px){
-  .dash__grid{grid-template-columns:repeat(4,1fr)}
-  .cell--score,.cell--chart,.cell--flow,.cell--risk,.cell--ai{grid-column:span 4}
-  .cell--kpi{grid-column:span 2}
+  /* ── Dashboard Widget (Landing Page) Mobile Fix ── */
+  .dash__grid, .dash.is-narrow .dash__grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .dash .cell--score, .dash .cell--chart, .dash .cell--flow, .dash .cell--risk, .dash .cell--ai,
+  .dash.is-narrow .cell--score, .dash.is-narrow .cell--chart, .dash.is-narrow .cell--flow, .dash.is-narrow .cell--risk, .dash.is-narrow .cell--ai { grid-column: span 2 !important; }
+  .dash .cell--kpi, .dash.is-narrow .cell--kpi { grid-column: span 1 !important; }
   .stats__grid{grid-template-columns:1fr 1fr}
   .dash.is-narrow .cell{padding:12px 14px}
   .foot__grid{grid-template-columns:1fr}
   .sim__val{font-size:16px}
   .scene__box{padding:22px}
-  .card{padding:28px 26px;height:auto;min-height:200px}
+
+  /* ── Card stack: 2 kolom grid (iPad & tablet) ───── */
+  .stack{
+    height:auto;
+    min-height:0;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+    overflow:visible;
+    max-width:100%;
+    padding:0 4px;
+    box-sizing:border-box;
+  }
+  .card{
+    position:relative;
+    inset:auto;
+    margin:0;
+    width:100%;
+    max-width:100%;
+    height:auto;
+    min-height:180px;
+    padding:22px 20px;
+    box-sizing:border-box;
+    /* Reset semua transform dari JS */
+    transform:none!important;
+    opacity:1!important;
+    z-index:auto!important;
+    cursor:default;
+  }
+  .card blockquote{font-size:clamp(14px,1.8vw,18px)}
+  .stack__hint{display:none}
+
   .island{width:132px}
   .island__links{display:none}
   .island.is-open{width:min(320px,88vw)}
   .island.is-open .island__links{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:14px 0 0}
   .island__toggle{display:flex;margin-left:auto}
 }
+@media (max-width:600px){
+  /* ── Card stack: tetap 2 kolom di HP ─────────────── */
+  .stack{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:0;
+  }
+  .card{
+    min-height:160px;
+    padding:18px 14px;
+  }
+  .card blockquote{font-size:clamp(13px,3.8vw,16px);line-height:1.45}
+  .card figcaption{font-size:12px}
+
+  /* Lainnya */
+  .stats__grid{grid-template-columns:1fr}
+  .foot__grid{grid-template-columns:1fr}
+  .case__stats{grid-template-columns:1fr 1fr}
+  .scene__box{padding:16px}
+  .voices__head{text-align:left;align-items:flex-start}
+}
+@media (max-width:360px){
+  /* HP sangat kecil: 1 kolom */
+  .stack{grid-template-columns:1fr}
+  .card{padding:16px 14px;min-height:140px}
+}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
   .reveal,.line{opacity:1!important;transform:none!important}
 }
+

@@ -144,7 +144,20 @@
     var cards = $$('.card', stack);
     var order = cards.map(function (_, i) { return i; }); /* order[0] = kartu paling depan */
 
+    /* Di layar ≤820px (iPad & HP), biarkan CSS grid 2 kolom yang handle */
+    function isMobileStack() { return window.innerWidth <= 820; }
+
     function layout(animateAll) {
+      /* Skip JS layout di mobile — CSS override handle */
+      if (isMobileStack()) {
+        cards.forEach(function(el) {
+          el.style.transform = '';
+          el.style.opacity = '';
+          el.style.zIndex = '';
+          el.style.position = '';
+        });
+        return;
+      }
       order.forEach(function (cardIdx, pos) {
         var el = cards[cardIdx];
         el.style.zIndex = String(cards.length - pos);
@@ -165,7 +178,11 @@
     }
     layout();
 
+    /* Re-layout saat resize (masuk/keluar mode mobile) */
+    window.addEventListener('resize', function() { layout(); });
+
     function advance() {
+      if (isMobileStack()) return;
       order.push(order.shift());
       layout();
     }
@@ -173,6 +190,7 @@
     var dragging = null, startX = 0, curX = 0, active = false;
 
     function onDown(ev) {
+      if (isMobileStack()) return;
       var el = cards[order[0]];
       if (ev.target.closest('.card') !== el) return;
       dragging = el;
@@ -214,6 +232,7 @@
     addEventListener('pointermove', onMove);
     addEventListener('pointerup', onUp);
     stack.addEventListener('click', function (ev) {
+      if (isMobileStack()) return;
       if (Math.abs(curX) > 6) return; /* itu drag, bukan klik */
       var el = cards[order[0]];
       if (ev.target.closest('.card') === el) advance();
